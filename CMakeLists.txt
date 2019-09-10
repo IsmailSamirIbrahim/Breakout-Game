@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.9)
 
-project(2D-Game VERSION 1.0.0 LANGUAGES CXX C)
+project(Breakout-Game VERSION 1.0.0 LANGUAGES CXX C)
 
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
@@ -10,6 +10,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin/$<CONFIG>")
 
 #external libraries
 add_subdirectory(external/glew)
+add_subdirectory(external/glfw)
 
 # internal libraries
 add_subdirectory(playground)
@@ -23,6 +24,7 @@ set_target_properties(
 
 set_target_properties(
 	glew
+	glfw
 	PROPERTIES FOLDER External
 )
 

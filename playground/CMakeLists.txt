@@ -19,6 +19,7 @@ target_link_libraries(playground
 	PRIVATE
 		game
 		glew
+		glfw
 )
 
 # Windows specfic flags to enable W variations of winapi
