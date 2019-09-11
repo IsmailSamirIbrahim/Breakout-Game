@@ -1,13 +1,19 @@
 cmake_minimum_required(VERSION 3.9)
 
+# list the header files
+set(HEADER_FILES
+	include/program/program.h
+)
+
 # list the source files
 set(SOURCE_FILES
-	src/playground.cpp
+	src/program/program.cpp
 )
 
 
 # add library target
-add_executable(playground
+add_library(program
+	${HEADER_FILES}
 	${SOURCE_FILES}
 )
 
@@ -15,17 +21,14 @@ add_executable(playground
 source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${HEADER_FILES})
 source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${SOURCE_FILES})
 
-target_link_libraries(playground
+target_link_libraries(program
 	PRIVATE
-		game
 		glew
-		glfw
-		program
 )
 
 # Windows specfic flags to enable W variations of winapi
 if(WIN32)
-	target_compile_definitions(playground
+	target_compile_definitions(program
 		PRIVATE
 			OS_WINDOWS=1
 	)
@@ -35,16 +38,23 @@ endif()
 # enable C++17
 # disable any compiler specifc extensions
 # add d suffix in debug mode
-target_compile_features(playground PUBLIC cxx_std_17)
-set_target_properties(playground PROPERTIES
+target_compile_features(program PUBLIC cxx_std_17)
+set_target_properties(program PROPERTIES
 	CXX_EXTENSIONS OFF
+	DEBUG_POSTFIX d
 )
 
 # define debug macro
-target_compile_definitions(playground PRIVATE "$<$<CONFIG:DEBUG>:DEBUG>")
+target_compile_definitions(program PRIVATE "$<$<CONFIG:DEBUG>:DEBUG>")
+
+# generate exports header file
+include(GenerateExportHeader)
+generate_export_header(program
+	EXPORT_FILE_NAME ${CMAKE_CURRENT_SOURCE_DIR}/include/program/Exports.h
+)
 
 # list include directories
-target_include_directories(playground
+target_include_directories(program
 	PUBLIC
 	${CMAKE_CURRENT_SOURCE_DIR}/include
 )

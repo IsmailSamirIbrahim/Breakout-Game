@@ -3,7 +3,10 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
+#include <program/program.h>
+
 using namespace std;
+using namespace bko;
 
 void processInput(GLFWwindow* window);
 void frambuffer_size_callback(GLFWwindow* window, int width, int height);
@@ -58,49 +61,7 @@ main(int argc, char** argv)
 
 	// build and compile our shader program
 
-	// vertex shader
-	int vertex_shader = glCreateShader(GL_VERTEX_SHADER);
-	glShaderSource(vertex_shader, 1, &vertex_shader_source, NULL);
-	glCompileShader(vertex_shader);
-
-	// check for shader compile errors
-	int success;
-	char info[512];
-	glGetShaderiv(vertex_shader, GL_COMPILE_STATUS, &success);
-	if (!success)
-	{
-		glGetShaderInfoLog(vertex_shader, 512, NULL, info);
-		std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << info << std::endl;
-	}
-
-	//fragmnet shader
-	int fragment_shader = glCreateShader(GL_FRAGMENT_SHADER);
-	glShaderSource(fragment_shader, 1, &fragment_shader_source, NULL);
-	glCompileShader(fragment_shader);
-	
-	// check for shader compile errors
-	glGetShaderiv(fragment_shader, GL_COMPILE_STATUS, &success);
-	if (!success)
-	{
-		glGetShaderInfoLog(vertex_shader, 512, NULL, info);
-		std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << info << std::endl;
-	}
-
-	// link shaders
-	int program = glCreateProgram();
-	glAttachShader(program, vertex_shader);
-	glAttachShader(program, fragment_shader);
-	glLinkProgram(program);
-	
-	// check for linking errors
-	glGetProgramiv(program, GL_LINK_STATUS, &success);
-	if (!success) {
-		glGetProgramInfoLog(program, 512, NULL, info);
-		std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n" << info << std::endl;
-	}
-
-	glDeleteShader(vertex_shader);
-	glDeleteShader(fragment_shader);
+	Program program = program_new(vertex_shader_source, fragment_shader_source);
 
 
 	// set up vertex data(and buffer(s)) and configure vertex attributes
@@ -119,12 +80,11 @@ main(int argc, char** argv)
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
-
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	
+
 	glBindVertexArray(0);
 
 	// render loop
@@ -138,9 +98,8 @@ main(int argc, char** argv)
 		glClear(GL_COLOR_BUFFER_BIT);
 
 		// draw triangle
-		glUseProgram(program);
+		program_use(program);
 		glBindVertexArray(VAO);
-		//glDrawArrays(GL_TRIANGLES, 0, 3);
 		glDrawArrays(GL_TRIANGLES, 0, 3);
 
 		// swap buffers

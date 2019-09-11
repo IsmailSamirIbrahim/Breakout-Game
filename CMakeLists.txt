@@ -15,10 +15,12 @@ add_subdirectory(external/glfw)
 # internal libraries
 add_subdirectory(playground)
 add_subdirectory(game)
+add_subdirectory(program)
 
 # Organize Targets into folders
 set_target_properties(
 	game
+	program
 	PROPERTIES FOLDER Game
 )
 
