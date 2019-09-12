@@ -11,6 +11,8 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin/$<CONFIG>")
 #external libraries
 add_subdirectory(external/glew)
 add_subdirectory(external/glfw)
+add_subdirectory(external/glm)
+
 
 # internal libraries
 add_subdirectory(playground)
@@ -27,6 +29,7 @@ set_target_properties(
 set_target_properties(
 	glew
 	glfw
+	glm
 	PROPERTIES FOLDER External
 )
 

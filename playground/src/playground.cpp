@@ -26,7 +26,7 @@ const char* fragment_shader_source = R"STRING(
 	out vec4 FragColor;
 	void main()
 	{
-		FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);
+		FragColor = vec4(0.5f, 0.0f, 0.5f, 1.0f);
 	}
 )STRING";
 
@@ -87,6 +87,7 @@ main(int argc, char** argv)
 
 	glBindVertexArray(0);
 
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	// render loop
 	while (!glfwWindowShouldClose(window))
 	{
@@ -94,7 +95,7 @@ main(int argc, char** argv)
 		processInput(window);
 
 		//render stuff
-		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 
 		// draw triangle
@@ -113,6 +114,8 @@ main(int argc, char** argv)
 	glDeleteVertexArrays(1, &VAO);
 	glDeleteBuffers(1, &VBO);
 	
+	program_free(program);
+
 	// terminate, clearing all previously allocated GLFW resources.
 	glfwTerminate();
 

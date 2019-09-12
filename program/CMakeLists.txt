@@ -24,6 +24,7 @@ source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${SOURCE_FILES})
 target_link_libraries(program
 	PRIVATE
 		glew
+		glm
 )
 
 # Windows specfic flags to enable W variations of winapi

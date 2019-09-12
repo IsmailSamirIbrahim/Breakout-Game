@@ -20,6 +20,7 @@ target_link_libraries(playground
 		game
 		glew
 		glfw
+		glm
 		program
 )
 
