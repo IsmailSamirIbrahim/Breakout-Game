@@ -4,7 +4,7 @@
 
 #include <GL/glew.h>
 
-#include "../../external/glm/glm/glm.hpp"
+#include <glm/glm.hpp>
 
 namespace bko
 {

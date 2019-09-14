@@ -48,4 +48,5 @@ target_compile_definitions(playground PRIVATE "$<$<CONFIG:DEBUG>:DEBUG>")
 target_include_directories(playground
 	PUBLIC
 	${CMAKE_CURRENT_SOURCE_DIR}/include
+	${CMAKE_CURRENT_SOURCE_DIR}/../external/stb
 )

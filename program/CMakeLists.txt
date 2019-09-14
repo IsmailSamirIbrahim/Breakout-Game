@@ -58,4 +58,5 @@ generate_export_header(program
 target_include_directories(program
 	PUBLIC
 	${CMAKE_CURRENT_SOURCE_DIR}/include
+	${CMAKE_CURRENT_SOURCE_DIR}/../external/glm
 )

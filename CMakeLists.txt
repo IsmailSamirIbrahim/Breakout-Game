@@ -12,6 +12,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin/$<CONFIG>")
 add_subdirectory(external/glew)
 add_subdirectory(external/glfw)
 add_subdirectory(external/glm)
+add_subdirectory(external/stb)
 
 
 # internal libraries
