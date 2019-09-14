@@ -1,17 +1,36 @@
 #include <texture/texture.h>
 
+#include <assert.h>
+
 namespace bko
 {
 
+	inline static GLint
+	_map_format(PIXEL_FORMAT format)
+	{
+		switch (format)
+		{
+		case PIXEL_FORMAT::RGBA:
+			return GL_RGBA;
+
+		case PIXEL_FORMAT::RGB:
+			return GL_RGB;
+
+		default:
+			assert("invalid pixel format");
+			return GL_RGBA;
+		}
+	}
+
 	Texture
-	texture_new(GLuint width, GLuint height, unsigned char* data, GLuint internal_format, GLuint image_format)
+	texture_new(GLuint width, GLuint height, unsigned char* data, PIXEL_FORMAT internal_format, PIXEL_FORMAT image_format)
 	{
 		Texture self{};
 
 		self.width = width;
 		self.height = height;
-		self.internal_format = internal_format;
-		self.image_format = image_format;
+		self.internal_format = _map_format(internal_format);
+		self.image_format = _map_format(image_format);
 
 		//create texture
 		glGenTextures(1, &self.id);
@@ -20,11 +39,11 @@ namespace bko
 		glBindTexture(GL_TEXTURE_2D, self.id);
 		glTexImage2D(GL_TEXTURE_2D,
 			0,
-			internal_format,
+			self.internal_format,
 			width,
 			height,
 			0,
-			image_format,
+			self.image_format,
 			GL_UNSIGNED_BYTE,
 			data);
 

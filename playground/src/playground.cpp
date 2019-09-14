@@ -136,8 +136,8 @@ main(int argc, char** argv)
 	if (image2 == NULL)
 		cout << "Can't load image" << endl;
 
-	Texture texture1 = texture_new(width1, height1, image1, GL_RGB, GL_RGB);
-	Texture texture2 = texture_new(width2, height2, image2, GL_RGB, GL_RGBA);
+	Texture texture1 = texture_new(width1, height1, image1, PIXEL_FORMAT::RGB, PIXEL_FORMAT::RGB);
+	Texture texture2 = texture_new(width2, height2, image2, PIXEL_FORMAT::RGB, PIXEL_FORMAT::RGBA);
 
 	stbi_image_free(image1);
 	stbi_image_free(image2);
