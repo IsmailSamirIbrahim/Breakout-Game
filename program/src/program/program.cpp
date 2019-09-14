@@ -1,5 +1,7 @@
 #include "program/program.h"
 
+#include "../../external/glm/glm/gtc/type_ptr.hpp"
+
 #include <iostream>
 
 using namespace std;
@@ -75,5 +77,59 @@ namespace bko
 	program_use(Program self)
 	{
 		glUseProgram(self.id);
+	}
+
+	void
+	program_float_set(Program self, const char * name, GLfloat val)
+	{
+		glUniform1f(glGetUniformLocation(self.id, name), val);
+	}
+
+	void
+	program_int_set(Program self, const char * name, GLint val)
+	{
+		glUniform1i(glGetUniformLocation(self.id, name), val);
+	}
+
+	void
+	program_vec2f_set(Program self, const char * name, GLfloat x, GLfloat y)
+	{
+		 glUniform2f(glGetUniformLocation(self.id, name), x, y);
+	}
+
+	void
+	program_vec2f_set(Program self, const char * name, const glm::vec2 & val)
+	{
+		 glUniform2f(glGetUniformLocation(self.id, name), val.x, val.y);
+	}
+
+	void
+	program_vec3f_set(Program self, const char * name, GLfloat x, GLfloat y, GLfloat z)
+	{
+		 glUniform3f(glGetUniformLocation(self.id, name), x, y, z);
+	}
+
+	void
+	program_vec3f_set(Program self, const char * name, const glm::vec3 & val)
+	{
+		 glUniform3f(glGetUniformLocation(self.id, name), val.x, val.y, val.z);
+	}
+
+	void
+	program_vec4f_set(Program self, const char * name, GLfloat x, GLfloat y, GLfloat z, GLfloat w)
+	{
+		 glUniform4f(glGetUniformLocation(self.id, name), x, y, z, w);
+	}
+
+	void
+	program_vec4f_set(Program self, const char * name, const glm::vec4 & val)
+	{
+		 glUniform4f(glGetUniformLocation(self.id, name), val.x, val.y, val.z, val.w);
+	}
+
+	void
+	program_mat4_set(Program self, const char * name, const glm::mat4 & matrix)
+	{
+		 glUniformMatrix4fv(glGetUniformLocation(self.id, name), 1, GL_FALSE, glm::value_ptr(matrix));
 	}
 }

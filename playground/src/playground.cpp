@@ -15,18 +15,23 @@ void frambuffer_size_callback(GLFWwindow* window, int width, int height);
 const char* vertex_shader_source = R"STRING(
 	#version 330 core
 	layout (location = 0) in vec3 aPos;
+	layout (location = 1) in vec3 aColor;
+
+	out vec3 ourColor;
 	void main()
 	{
-	   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);
+		gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);
+		ourColor = aColor;
 	}
 )STRING";
 
 const char* fragment_shader_source = R"STRING(
 	#version 330 core
+	in vec3 ourColor;
 	out vec4 FragColor;
 	void main()
 	{
-		FragColor = vec4(0.5f, 0.0f, 0.5f, 1.0f);
+		FragColor = vec4(ourColor, 1.0);
 	}
 )STRING";
 
@@ -40,7 +45,6 @@ main(int argc, char** argv)
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
 	//create window
-
 	GLFWwindow* window = glfwCreateWindow(800, 600, "Hello World", NULL, NULL);
 	if (window == NULL)
 	{
@@ -60,15 +64,15 @@ main(int argc, char** argv)
 	}
 
 	// build and compile our shader program
-
 	Program program = program_new(vertex_shader_source, fragment_shader_source);
 
 
 	// set up vertex data(and buffer(s)) and configure vertex attributes
 	float vertices[] = {
-	-0.5f, -0.5f, 0.0f,
-	 0.5f, -0.5f, 0.0f,
-	 0.0f,  0.5f, 0.0f
+		// positions         // colors
+		 0.5f, -0.5f, 0.0f,  1.0f, 0.0f, 0.0f,   // bottom right
+		-0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f,   // bottom left
+		 0.0f,  0.5f, 0.0f,  0.0f, 0.0f, 1.0f    // top
 	};
 
 	unsigned int VBO, VAO;
@@ -80,8 +84,11 @@ main(int argc, char** argv)
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
+
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+	glEnableVertexAttribArray(1);
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
@@ -113,7 +120,6 @@ main(int argc, char** argv)
 	// de-allocate all resources once they've outlived their purpose:
 	glDeleteVertexArrays(1, &VAO);
 	glDeleteBuffers(1, &VBO);
-	
 	program_free(program);
 
 	// terminate, clearing all previously allocated GLFW resources.
