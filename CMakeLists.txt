@@ -19,11 +19,13 @@ add_subdirectory(external/stb)
 add_subdirectory(playground)
 add_subdirectory(game)
 add_subdirectory(program)
+add_subdirectory(texture)
 
 # Organize Targets into folders
 set_target_properties(
 	game
 	program
+	texture
 	PROPERTIES FOLDER Game
 )
 
