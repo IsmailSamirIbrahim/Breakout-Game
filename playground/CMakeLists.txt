@@ -23,6 +23,7 @@ target_link_libraries(playground
 		glm
 		program
 		texture
+		resource_manager
 )
 
 # Windows specfic flags to enable W variations of winapi
@@ -50,4 +51,5 @@ target_include_directories(playground
 	PUBLIC
 	${CMAKE_CURRENT_SOURCE_DIR}/include
 	${CMAKE_CURRENT_SOURCE_DIR}/../external/stb/include
+	${CMAKE_CURRENT_SOURCE_DIR}/../program/shaders/
 )

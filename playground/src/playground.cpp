@@ -1,6 +1,3 @@
-#define STB_IMAGE_IMPLEMENTATION
-#include <stb/stb_image.h>
-
 #include <iostream>
 
 #include <GL/glew.h>
@@ -8,47 +5,13 @@
 
 #include <program/program.h>
 #include <texture/texture.h>
+#include <resource_manager/resource_manager.h>
 
 using namespace std;
 using namespace bko;
 
 void processInput(GLFWwindow* window);
 void frambuffer_size_callback(GLFWwindow* window, int width, int height);
-
-
-const char* vertex_shader_source = R"STRING(
-	#version 330 core
-	layout (location = 0) in vec3 aPos;
-	layout (location = 1) in vec3 aColor;
-	layout (location = 2) in vec2 aTexCoord;
-
-	out vec3 ourColor;
-	out vec2 TexCoord;
-
-	void main()
-	{
-		gl_Position = vec4(aPos, 1.0);
-		ourColor = aColor;
-		TexCoord = vec2(aTexCoord.x, aTexCoord.y);
-	}
-)STRING";
-
-const char* fragment_shader_source = R"STRING(
-	#version 330 core
-	out vec4 FragColor;
-
-	in vec3 ourColor;
-	in vec2 TexCoord;
-
-	// texture sampler
-	uniform sampler2D texture1;
-	uniform sampler2D texture2;
-
-	void main()
-	{
-		FragColor = mix(texture(texture1, TexCoord), texture(texture2, TexCoord), 0.2);
-	}
-)STRING";
 
 int
 main(int argc, char** argv)
@@ -77,10 +40,7 @@ main(int argc, char** argv)
 		std::cout << "Error : " << glewGetErrorString(error) << std::endl;
 		return -1;
 	}
-
-	// build and compile our shader program
-	Program program = program_new(vertex_shader_source, fragment_shader_source);
-
+	
 	// set up vertex data(and buffer(s)) and configure vertex attributes
 	float vertices[] = {
 		// positions          // colors           // texture coords
@@ -122,25 +82,20 @@ main(int argc, char** argv)
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
+	
+	// create instant of Resource Manager
+	Resource_Manager rm = IResource_Manager::get_instance();
 
-	// load image and generate the texture1
-	int width1, height1, channels1;
-	stbi_set_flip_vertically_on_load(true);
-	unsigned char* image1 = stbi_load("E:/Work/Breakout-Game/container.jpg", &width1, &height1, &channels1, 0);
-	if (image1 == NULL)
-		cout << "Can't load image" << endl;
+	// build and compile our shader program
+	std::string vshader_path = "D:/Ismail/Breakout-Game/program/shaders/rectangle.vs";
+	std::string fshader_path = "D:/Ismail/Breakout-Game/program/shaders/rectangle.fs";
+	resource_manager_load_program(rm, vshader_path, fshader_path, "rectangle");
+	Program program = resource_manager_program(rm, "rectangle");
 
-	int width2, height2, channels2;
-	stbi_set_flip_vertically_on_load(true);
-	unsigned char* image2 = stbi_load("E:/Work/Breakout-Game/awesomeface.png", &width2, &height2, &channels2, 0);
-	if (image2 == NULL)
-		cout << "Can't load image" << endl;
-
-	Texture texture1 = texture_new(width1, height1, image1, PIXEL_FORMAT::RGB, PIXEL_FORMAT::RGB);
-	Texture texture2 = texture_new(width2, height2, image2, PIXEL_FORMAT::RGB, PIXEL_FORMAT::RGBA);
-
-	stbi_image_free(image1);
-	stbi_image_free(image2);
+	resource_manager_load_texture(rm, "D:/Ismail/Breakout-Game/container.jpg", "container");
+	resource_manager_load_texture(rm, "D:/Ismail/Breakout-Game/awesomeface.png", "awesomeface");
+	Texture texture1 = resource_manager_texture(rm, "container");
+	Texture texture2 = resource_manager_texture(rm, "awesomeface");
 
 	program_use(program);
 	program_int_set(program, "texture1", 0);

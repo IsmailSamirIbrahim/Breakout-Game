@@ -6,7 +6,7 @@
 
 namespace bko
 {
-	enum class PIXEL_FORMAT
+	enum class PIXEL_FORMAT :int
 	{
 		RGBA,
 		RGB

@@ -14,18 +14,19 @@ add_subdirectory(external/glfw)
 add_subdirectory(external/glm)
 add_subdirectory(external/stb)
 
-
 # internal libraries
 add_subdirectory(playground)
 add_subdirectory(game)
 add_subdirectory(program)
 add_subdirectory(texture)
+add_subdirectory(resource_manager)
 
 # Organize Targets into folders
 set_target_properties(
 	game
 	program
 	texture
+	resource_manager
 	PROPERTIES FOLDER Game
 )
 
