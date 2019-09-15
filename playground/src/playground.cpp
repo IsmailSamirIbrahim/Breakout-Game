@@ -1,3 +1,5 @@
+//#include <vld.h>
+
 #include <iostream>
 
 #include <GL/glew.h>
@@ -87,13 +89,13 @@ main(int argc, char** argv)
 	Resource_Manager rm = IResource_Manager::get_instance();
 
 	// build and compile our shader program
-	std::string vshader_path = "E:/Work/Breakout-Game/program/shaders/rectangle.vs";
-	std::string fshader_path = "E:/Work/Breakout-Game/program/shaders/rectangle.fs";
-	resource_manager_load_program(rm, vshader_path, fshader_path, "rectangle");
+	std::string vshader_path = std::string(SHADER_DIR) + std::string("/shaders/rectangle.vs");
+	std::string fshader_path = std::string(SHADER_DIR) + std::string("/shaders/rectangle.fs");
+	resource_manager_load_program(rm, vshader_path.c_str(), fshader_path.c_str(), "rectangle");
 	Program program = resource_manager_program(rm, "rectangle");
 
-	resource_manager_load_texture(rm, "E:/Work/Breakout-Game/container.jpg", "container");
-	resource_manager_load_texture(rm, "E:/Work/Breakout-Game/awesomeface.png", "awesomeface");
+	resource_manager_load_texture(rm, (std::string(IMAGE_DIR) + std::string("/images/container.jpg")).c_str(), "container");
+	resource_manager_load_texture(rm, (std::string(IMAGE_DIR) + std::string("/images/awesomeface.png")).c_str(), "awesomeface");
 	Texture texture1 = resource_manager_texture(rm, "container");
 	Texture texture2 = resource_manager_texture(rm, "awesomeface");
 
@@ -135,6 +137,7 @@ main(int argc, char** argv)
 	program_free(program);
 	texture_free(texture1);
 	texture_free(texture2);
+	resource_manager_free(rm);
 
 	// terminate, clearing all previously allocated GLFW resources.
 	glfwTerminate();

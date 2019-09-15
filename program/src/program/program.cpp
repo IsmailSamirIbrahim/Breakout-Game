@@ -20,6 +20,7 @@ namespace bko
 		{
 			glGetShaderInfoLog(shader, 512, NULL, info_log);
 			cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << info_log << endl;
+			return;
 		}
 	}
 
@@ -34,6 +35,7 @@ namespace bko
 			glGetProgramInfoLog(program, 512, NULL, info_log);
 			std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n" << info_log << std::endl;
 		}
+		return;
 	}
 
 	// API
@@ -128,7 +130,7 @@ namespace bko
 	}
 
 	void
-	program_mat4_set(Program self, const char * name, const glm::mat4 & matrix)
+	program_mat4f_set(Program self, const char * name, const glm::mat4 & matrix)
 	{
 		 glUniformMatrix4fv(glGetUniformLocation(self.id, name), 1, GL_FALSE, glm::value_ptr(matrix));
 	}

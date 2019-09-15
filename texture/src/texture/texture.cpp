@@ -6,15 +6,15 @@ namespace bko
 {
 
 	inline static GLint
-	_map_format(PIXEL_FORMAT format)
+	_map_format(Texture::FORMAT format)
 	{
 		switch (format)
 		{
-		case PIXEL_FORMAT::RGBA:
-			return GL_RGBA;
-
-		case PIXEL_FORMAT::RGB:
+		case Texture::FORMAT_RGB:
 			return GL_RGB;
+
+		case Texture::FORMAT_RGBA:
+			return GL_RGBA;
 
 		default:
 			assert("invalid pixel format");
@@ -23,7 +23,7 @@ namespace bko
 	}
 
 	Texture
-	texture_new(GLuint width, GLuint height, unsigned char* data, PIXEL_FORMAT internal_format, PIXEL_FORMAT image_format)
+	texture_new(GLuint width, GLuint height, unsigned char* image, Texture::FORMAT internal_format, Texture::FORMAT image_format)
 	{
 		Texture self{};
 
@@ -45,7 +45,7 @@ namespace bko
 			0,
 			self.image_format,
 			GL_UNSIGNED_BYTE,
-			data);
+			image);
 
 		// generate mipmap
 		glGenerateMipmap(GL_TEXTURE_2D);

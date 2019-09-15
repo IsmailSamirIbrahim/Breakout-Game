@@ -67,3 +67,8 @@ target_include_directories(program
 	${CMAKE_CURRENT_SOURCE_DIR}/include
 	${CMAKE_CURRENT_SOURCE_DIR}/../external/glm
 )
+
+target_compile_definitions(program
+	PUBLIC
+		SHADER_DIR="${CMAKE_CURRENT_SOURCE_DIR}"
+)

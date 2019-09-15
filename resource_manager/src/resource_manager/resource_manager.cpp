@@ -5,6 +5,7 @@
 
 #include <sstream>
 #include <fstream>
+#include <string>
 
 
 using namespace std;
@@ -14,16 +15,12 @@ namespace bko
 {
 	// Helper functions
 	inline static Program
-	_load_program_from_file(std::string vshader_path, std::string fshader_path)
+	_load_program_from_file(const char* vshader_path, const char* fshader_path)
 	{
-		// retrieve the vertex/fragment source code from filePath
-		std::string vertex_source;
-		std::string fragment_source;
-
 		// open files
-		std::ifstream vertex_shader_file(vshader_path);
-		std::ifstream fragment_shader_file(fshader_path);
-		std::stringstream vshader_stream, fshader_stream;
+		ifstream vertex_shader_file(vshader_path);
+		ifstream fragment_shader_file(fshader_path);
+		stringstream vshader_stream, fshader_stream;
 
 		// Read file's buffer contents into streams
 		vshader_stream << vertex_shader_file.rdbuf();
@@ -34,8 +31,8 @@ namespace bko
 		fragment_shader_file.close();
 		
 		// Convert stream into string
-		vertex_source = vshader_stream.str();
-		fragment_source = fshader_stream.str();
+		string vertex_source = vshader_stream.str();
+		string fragment_source = fshader_stream.str();
 
 		// now create program object from shaders source code
 		Program program = program_new(vertex_source.c_str(), fragment_source.c_str());
@@ -44,11 +41,12 @@ namespace bko
 	}
 
 	inline static Texture
-	_load_texture_from_file(std::string image_path)
+	_load_texture_from_file(const char* image_path)
 	{
 		// Load image
+		stbi_set_flip_vertically_on_load(true);
 		int width, height, channels;
-		unsigned char* image = stbi_load(image_path.c_str(), &width, &height, &channels, 0);
+		unsigned char* image = stbi_load(image_path, &width, &height, &channels, 0);
 		
 		int internal_format;
 		int image_format;
@@ -56,9 +54,9 @@ namespace bko
 		Texture texture{};
 
 		if (channels == 4)
-			texture = texture_new(width, height, image, PIXEL_FORMAT::RGB, PIXEL_FORMAT::RGBA);
+			texture = texture_new(width, height, image, Texture::FORMAT_RGB, Texture::FORMAT_RGBA);
 		else
-			texture = texture_new(width, height, image, PIXEL_FORMAT::RGB, PIXEL_FORMAT::RGB);
+			texture = texture_new(width, height, image, Texture::FORMAT_RGB, Texture::FORMAT_RGB);
 
 		stbi_image_free(image);
 
@@ -80,26 +78,30 @@ namespace bko
 	}
 
 	void
-	resource_manager_load_program(Resource_Manager self, std::string vshader_path, std::string fshader_path, std::string name)
+	resource_manager_load_program(Resource_Manager self, const char* vshader_path, const char* fshader_path, const char* name)
 	{
 		self->programs[name] = _load_program_from_file(vshader_path, fshader_path);
 	}
 
 	Program
-	resource_manager_program(Resource_Manager self, std::string name)
+	resource_manager_program(Resource_Manager self, const char* name)
 	{
-		return self->programs[name];
+		for (auto pair : self->programs)
+			if (strcmp(pair.first, name) == 0)
+				return pair.second;
 	}
 
 	void
-	resource_manager_load_texture(Resource_Manager self, std::string image_path, std::string name)
+	resource_manager_load_texture(Resource_Manager self, const char* image_path, const char* name)
 	{
 		self->textures[name] = _load_texture_from_file(image_path);
 	}
 
 	Texture
-	resource_manager_texture(Resource_Manager self, std::string name)
+	resource_manager_texture(Resource_Manager self, const char* name)
 	{
-		return self->textures[name];
+		for (auto pair : self->textures)
+			if (strcmp(pair.first, name) == 0)
+				return pair.second;
 	}
 }

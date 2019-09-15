@@ -52,6 +52,6 @@ namespace bko
 	program_vec4f_set(Program self, const char* name, const glm::vec4& val);
 
 	PROGRAM_EXPORT void
-	program_mat4_set(Program self, const char* name, const glm::mat4& matrix);
+	program_mat4f_set(Program self, const char* name, const glm::mat4& matrix);
 
 } //namespace end

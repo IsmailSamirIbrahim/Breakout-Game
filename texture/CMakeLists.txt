@@ -59,3 +59,8 @@ target_include_directories(texture
 	PUBLIC
 	${CMAKE_CURRENT_SOURCE_DIR}/include
 )
+
+target_compile_definitions(texture
+	PUBLIC
+		IMAGE_DIR="${CMAKE_CURRENT_SOURCE_DIR}"
+)

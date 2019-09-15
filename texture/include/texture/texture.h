@@ -6,14 +6,14 @@
 
 namespace bko
 {
-	enum class PIXEL_FORMAT :int
-	{
-		RGBA,
-		RGB
-	};
-
 	struct Texture
 	{
+		enum FORMAT 
+		{ 
+			FORMAT_RGB,
+			FORMAT_RGBA
+		};
+
 		GLuint id;
 		GLuint width;
 		GLuint height;
@@ -22,7 +22,7 @@ namespace bko
 	};
 
 	TEXTURE_EXPORT Texture
-	texture_new(GLuint width, GLuint height, unsigned char* data, PIXEL_FORMAT internal_format, PIXEL_FORMAT image_format);
+	texture_new(GLuint width, GLuint height, unsigned char* image, Texture::FORMAT internal_format, Texture::FORMAT image_format);
 
 	TEXTURE_EXPORT void
 	texture_free(Texture self);
