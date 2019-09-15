@@ -87,13 +87,13 @@ main(int argc, char** argv)
 	Resource_Manager rm = IResource_Manager::get_instance();
 
 	// build and compile our shader program
-	std::string vshader_path = "D:/Ismail/Breakout-Game/program/shaders/rectangle.vs";
-	std::string fshader_path = "D:/Ismail/Breakout-Game/program/shaders/rectangle.fs";
+	std::string vshader_path = "E:/Work/Breakout-Game/program/shaders/rectangle.vs";
+	std::string fshader_path = "E:/Work/Breakout-Game/program/shaders/rectangle.fs";
 	resource_manager_load_program(rm, vshader_path, fshader_path, "rectangle");
 	Program program = resource_manager_program(rm, "rectangle");
 
-	resource_manager_load_texture(rm, "D:/Ismail/Breakout-Game/container.jpg", "container");
-	resource_manager_load_texture(rm, "D:/Ismail/Breakout-Game/awesomeface.png", "awesomeface");
+	resource_manager_load_texture(rm, "E:/Work/Breakout-Game/container.jpg", "container");
+	resource_manager_load_texture(rm, "E:/Work/Breakout-Game/awesomeface.png", "awesomeface");
 	Texture texture1 = resource_manager_texture(rm, "container");
 	Texture texture2 = resource_manager_texture(rm, "awesomeface");
 
