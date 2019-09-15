@@ -51,5 +51,10 @@ target_include_directories(playground
 	PUBLIC
 	${CMAKE_CURRENT_SOURCE_DIR}/include
 	${CMAKE_CURRENT_SOURCE_DIR}/../external/stb/include
-	${CMAKE_CURRENT_SOURCE_DIR}/../program/shaders/
+)
+
+target_compile_definitions(playground
+	PRIVATE
+		SHADER_DIR="${CMAKE_CURRENT_SOURCE_DIR}/../resources"
+		IMAGE_DIR="${CMAKE_CURRENT_SOURCE_DIR}/../resources"
 )

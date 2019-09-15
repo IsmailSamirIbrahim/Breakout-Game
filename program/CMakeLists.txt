@@ -10,23 +10,15 @@ set(SOURCE_FILES
 	src/program/program.cpp
 )
 
-# list shaders
-set(SHADER_FILES
-	shaders/rectangle.vs
-	shaders/rectangle.fs
-)
-
 # add library target
 add_library(program
 	${HEADER_FILES}
 	${SOURCE_FILES}
-	${SHADER_FILES}
 )
 
 # make it reflect the same structure as the one on disk
 source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${HEADER_FILES})
 source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${SOURCE_FILES})
-source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${SHADER_FILES})
 
 target_link_libraries(program
 	PUBLIC
@@ -66,9 +58,4 @@ target_include_directories(program
 	PUBLIC
 	${CMAKE_CURRENT_SOURCE_DIR}/include
 	${CMAKE_CURRENT_SOURCE_DIR}/../external/glm
-)
-
-target_compile_definitions(program
-	PUBLIC
-		SHADER_DIR="${CMAKE_CURRENT_SOURCE_DIR}"
 )
