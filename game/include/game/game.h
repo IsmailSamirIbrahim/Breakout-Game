@@ -1,8 +1,11 @@
 #pragma once
 
 #include "game/Exports.h"
+#include "game/sprite_renderer.h"
 
 #include <GL/glew.h>
+
+#include <resource_manager/resource_manager.h>
 
 namespace bko
 {
@@ -19,6 +22,8 @@ namespace bko
 		GLboolean keys[1024];
 		GLuint width;
 		GLuint height;
+		Resource_Manager rm;
+		Sprite_Renderer sprite_renderer;
 
 	};
 
@@ -29,7 +34,7 @@ namespace bko
 	game_free(Game self);
 
 	GAME_EXPORT void
-	game_init(Game self);
+	game_init(Game& self);
 
 	GAME_EXPORT void
 	game_process_input(Game self, GLfloat delta_time);

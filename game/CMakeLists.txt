@@ -3,11 +3,13 @@ cmake_minimum_required(VERSION 3.9)
 # list the header files
 set(HEADER_FILES
 	include/game/game.h
+	include/game/sprite_renderer.h
 )
 
 # list the source files
 set(SOURCE_FILES
 	src/game/game.cpp
+	src/game/sprite_renderer.cpp
 )
 
 
@@ -23,6 +25,8 @@ target_link_libraries(game
 	glew
 	glfw
 	glm
+	program
+	texture
 )
 
 # make it reflect the same structure as the one on disk
@@ -60,4 +64,10 @@ generate_export_header(game
 target_include_directories(game
 	PUBLIC
 	${CMAKE_CURRENT_SOURCE_DIR}/include
+)
+
+target_compile_definitions(game
+	PRIVATE
+		SHADER_DIR="${CMAKE_CURRENT_SOURCE_DIR}/../resources"
+		IMAGE_DIR="${CMAKE_CURRENT_SOURCE_DIR}/../resources"
 )
