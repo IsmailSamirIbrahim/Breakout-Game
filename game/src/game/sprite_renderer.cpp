@@ -6,11 +6,18 @@ using namespace glm;
 
 namespace bko
 {
-	inline static void
-	_init_render_data(Sprite_Renderer& self)
+	struct ISprite_Renderer
+	{
+		Program program;
+		GLuint quad_vao;
+	};
+
+	// Helper Functions
+	inline static GLuint
+	_init_render_data()
 	{
 		// Configure VAO/VBO
-		GLuint vbo;
+		GLuint vbo, vao;
 		GLfloat vertices[] = 
 		{
 			// Pos      // Tex
@@ -23,10 +30,10 @@ namespace bko
 			1.0f, 0.0f, 1.0f, 0.0f
 		};
 
-		glGenVertexArrays(1, &self.quad_vao);
+		glGenVertexArrays(1, &vao);
 		glGenBuffers(1, &vbo);
 
-		glBindVertexArray(self.quad_vao);
+		glBindVertexArray(vao);
 
 		glBindBuffer(GL_ARRAY_BUFFER, vbo);
 		glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
@@ -39,21 +46,19 @@ namespace bko
 		glBindVertexArray(0);
 
 		glDeleteBuffers(1, &vbo);
+
+		return vao;
 	}
 
+
+	// API
 	Sprite_Renderer
-	sprite_renderer_new(const Program& program, const Texture& texture, const vec2& size, const vec2& position, GLfloat rotate_angle, const vec3& color)
+	sprite_renderer_new(const Program& program)
 	{
-		Sprite_Renderer self{};
+		Sprite_Renderer self = (Sprite_Renderer)::malloc(sizeof(ISprite_Renderer));
 
-		self.program = program;
-		self.texture = texture;
-		self.size = size;
-		self.position = position;
-		self.rotate_angle = rotate_angle;
-		self.color = color;
-
-		_init_render_data(self);
+		self->program  = program;
+		self->quad_vao = _init_render_data();
 
 		return self;
 	}
@@ -61,31 +66,34 @@ namespace bko
 	void
 	sprite_renderer_free(Sprite_Renderer self)
 	{
-		glDeleteVertexArrays(1, &self.quad_vao);
+		glDeleteVertexArrays(1, &self->quad_vao);
+		::free(self);
 	}
 	
 	void
-	sprite_renderer_render(Sprite_Renderer self)
+	sprite_renderer_render(Sprite_Renderer self, Game_Object object)
 	{
-		program_use(self.program);
+		// use program
+		program_use(self->program);
 
+		// create model matrix
 		mat4 model = mat4(1.0);
 
-		model = translate(model, vec3{ self.position, 0.0f });
+		model = translate(model, vec3{ object.position, 0.0f });
 
-		model = translate(model, vec3{ 0.5f * self.size.x, 0.5f * self.size.y, 0.0f });
-		model = rotate(model, self.rotate_angle, vec3{ 0.0f, 0.0f, 1.0f });
-		model = translate(model, vec3(-0.5f * self.size.x, -0.5f * self.size.y, 0.0f));
+		model = translate(model, vec3{ 0.5f * object.size.x, 0.5f * object.size.y, 0.0f });
+		model = rotate(model, object.rotation_angle, vec3{ 0.0f, 0.0f, 1.0f });
+		model = translate(model, vec3(-0.5f * object.size.x, -0.5f * object.size.y, 0.0f));
 
-		model = scale(model, vec3{ self.size, 1.0f });
+		model = scale(model, vec3{ object.size, 1.0f });
 
-		program_mat4f_set(self.program, "model", model);
-		program_vec3f_set(self.program, "spriteColor", self.color);
+		program_mat4f_set(self->program, "model", model);
+		program_vec3f_set(self->program, "spriteColor", object.color);
 
-		texture_bind(self.texture, GL_TEXTURE0);
+		texture_bind(object.texture, GL_TEXTURE0);
 
 		//draw
-		glBindVertexArray(self.quad_vao);
+		glBindVertexArray(self->quad_vao);
 		glDrawArrays(GL_TRIANGLES, 0, 6);
 		glBindVertexArray(0);
 	}

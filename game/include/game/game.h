@@ -4,6 +4,7 @@
 #include "game/sprite_renderer.h"
 
 #include <GL/glew.h>
+#include <GLFW/glfw3.h>
 
 #include <resource_manager/resource_manager.h>
 
@@ -20,15 +21,15 @@ namespace bko
 
 		STATE state;
 		GLboolean keys[1024];
-		GLuint width;
-		GLuint height;
+		GLsizei width;
+		GLsizei height;
+		GLFWwindow* window;
 		Resource_Manager rm;
 		Sprite_Renderer sprite_renderer;
-
 	};
 
 	GAME_EXPORT Game
-	game_new(GLuint width, GLuint height);
+	game_new(GLsizei width, GLsizei height);
 
 	GAME_EXPORT void
 	game_free(Game self);
@@ -37,12 +38,6 @@ namespace bko
 	game_init(Game& self);
 
 	GAME_EXPORT void
-	game_process_input(Game self, GLfloat delta_time);
-
-	GAME_EXPORT void
-	game_update(Game self, GLfloat delta_time);
-
-	GAME_EXPORT void
-	game_render(Game self);
+	game_run(Game self);
 
 } //namespace end

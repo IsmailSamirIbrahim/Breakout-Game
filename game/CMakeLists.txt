@@ -4,12 +4,14 @@ cmake_minimum_required(VERSION 3.9)
 set(HEADER_FILES
 	include/game/game.h
 	include/game/sprite_renderer.h
+	include/game/game_object.h
 )
 
 # list the source files
 set(SOURCE_FILES
 	src/game/game.cpp
 	src/game/sprite_renderer.cpp
+	src/game/game_object.cpp
 )
 
 

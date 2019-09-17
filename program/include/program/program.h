@@ -54,4 +54,5 @@ namespace bko
 	PROGRAM_EXPORT void
 	program_mat4f_set(Program self, const char* name, const glm::mat4& matrix);
 
+	constexpr static Program INVALID_PROGRAM = Program{};
 } //namespace end
