@@ -23,7 +23,7 @@ namespace bko
 		Game self{};
 
 		self.state = Game::STATE_ACTIVE;
-		self.current_level = 1;
+		self.current_level = 4;
 		self.player = Game_Object{};
 		self.window = window_new(width, height);
 		self.sprite_renderer = nullptr;
@@ -64,8 +64,20 @@ namespace bko
 
 		// load levels
 		string level_path = std::string(LEVEL_DIR) + std::string("/levels/standard.lvl");
-		Game_Level level_one = game_level_new(self.window.width, self.window.height * 0.5, level_path.c_str());
-		self.levels.push_back(level_one);
+		Game_Level level = game_level_new(self.window.width, self.window.height * 0.5, level_path.c_str());
+		self.levels.push_back(level);
+
+		level_path = std::string(LEVEL_DIR) + std::string("/levels/few_small_gaps.lvl");
+		level = game_level_new(self.window.width, self.window.height * 0.5, level_path.c_str());
+		self.levels.push_back(level);
+
+		level_path = std::string(LEVEL_DIR) + std::string("/levels/space_invader.lvl");
+		level = game_level_new(self.window.width, self.window.height * 0.5, level_path.c_str());
+		self.levels.push_back(level);
+
+		level_path = std::string(LEVEL_DIR) + std::string("/levels/bounce_galore.lvl");
+		level = game_level_new(self.window.width, self.window.height * 0.5, level_path.c_str());
+		self.levels.push_back(level);
 
 		// configure shaders
 		mat4 projection = ortho(0.0f, static_cast<GLfloat>(self.window.width), static_cast<GLfloat>(self.window.height), 0.0f, -1.0f, 1.0f);
