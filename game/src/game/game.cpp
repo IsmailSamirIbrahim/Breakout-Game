@@ -19,6 +19,7 @@ namespace bko
 		Game self{};
 
 		self.state = Game::STATE_ACTIVE;
+		self.current_level = 1;
 		self.window = window_new(width, height);
 		self.rm = IResource_Manager::get_instance();
 		self.sprite_renderer = nullptr;
@@ -29,6 +30,9 @@ namespace bko
 	void
 	game_free(Game self)
 	{
+		for(auto level : self.levels)
+			destruct(level);
+
 		destruct(self.window);
 		destruct(self.rm);
 		destruct(self.sprite_renderer);
@@ -42,11 +46,16 @@ namespace bko
 		string fshader_path = string(SHADER_DIR) + string("/shaders/sprite.fs");
 		resource_manager_load_program(self.rm, vshader_path.c_str(), fshader_path.c_str(), "sprite");
 
-		// Load textures
+		// load textures
 		string image_path = std::string(IMAGE_DIR) + std::string("/images/awesomeface.png");
 		resource_manager_load_texture(self.rm, image_path.c_str(), "face");
 		image_path = std::string(IMAGE_DIR) + std::string("/images/container.jpg");
 		resource_manager_load_texture(self.rm, image_path.c_str(), "container");
+
+		// load levels
+		string level_path = std::string(LEVEL_DIR) + std::string("/levels/standard.lvl");
+		Game_Level level_one = game_level_new(self.window.width, self.window.height * 0.5, level_path.c_str());
+		self.levels.push_back(level_one);
 
 		// configure shaders
 		mat4 projection = ortho(0.0f, static_cast<GLfloat>(self.window.width), static_cast<GLfloat>(self.window.height), 0.0f, -1.0f, 1.0f);
@@ -75,18 +84,14 @@ namespace bko
 	inline static void
 	game_render(Game self)
 	{
-		glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT);
-
-		Texture texture = resource_manager_texture(self.rm, "face");
-		Game_Object object{};
-		int k = 0;
-		for (int i = 0; i < 200; ++i) {
-			if ((i * 50) % self.window.width == 0)
-				k += 50;
-			object = game_object_new(texture, vec3(1.0f, 1.0f, 1.0f), vec2((i * 50) % self.window.width, k), vec2(50, 50), vec2{}, 0.0f, GL_FALSE, GL_FALSE);
-			sprite_renderer_render(self.sprite_renderer, object);
+		if (self.state == Game::STATE_ACTIVE)
+		{
+			glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+			glClear(GL_COLOR_BUFFER_BIT);
 		}
+		for (auto object : self.levels[self.current_level - 1].bricks)
+			if (!object.is_destroyed)
+				sprite_renderer_render(self.sprite_renderer, object);
 	}
 
 	void

@@ -6,6 +6,7 @@ set(HEADER_FILES
 	include/game/sprite_renderer.h
 	include/game/game_object.h
 	include/game/window.h
+	include/game/game_level.h
 )
 
 # list the source files
@@ -14,6 +15,7 @@ set(SOURCE_FILES
 	src/game/sprite_renderer.cpp
 	src/game/game_object.cpp
 	src/game/window.cpp
+	src/game/game_level.cpp
 )
 
 
@@ -74,4 +76,5 @@ target_compile_definitions(game
 	PRIVATE
 		SHADER_DIR="${CMAKE_CURRENT_SOURCE_DIR}/../resources"
 		IMAGE_DIR="${CMAKE_CURRENT_SOURCE_DIR}/../resources"
+		LEVEL_DIR="${CMAKE_CURRENT_SOURCE_DIR}/../resources"
 )
