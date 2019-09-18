@@ -5,8 +5,6 @@
 #include "game/window.h"
 #include "game/game_level.h"
 
-#include <resource_manager/resource_manager.h>
-
 #include <vector>
 
 namespace bko
@@ -24,8 +22,8 @@ namespace bko
 		GLboolean keys[1024];
 		std::vector<Game_Level> levels;
 		GLuint current_level;
+		Game_Object player;
 		Window window;
-		Resource_Manager rm;
 		Sprite_Renderer sprite_renderer;
 	};
 

@@ -1,4 +1,4 @@
-//#include <vld.h>
+#include <vld.h>
 
 #include <game/game.h>
 
@@ -7,7 +7,7 @@ using namespace bko;
 int
 main(int argc, char** argv)
 {	
-	Game game = game_new(1200, 900);
+	Game game = game_new(1000, 700);
 
 	game_init(game);
 

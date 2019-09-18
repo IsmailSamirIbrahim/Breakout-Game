@@ -1,6 +1,7 @@
 #include "game/game_level.h"
 
 #include <texture/texture.h>
+#include <resource_manager/resource_manager.h>
 
 #include <glm/glm.hpp>
 
@@ -13,6 +14,8 @@ using namespace glm;
 
 namespace bko
 {
+	static Resource_Manager rm = IResource_Manager::get_instance();
+
 	// Helper Fucntions
 	inline static vector<vector<GLuint>>
 	_load_level_from_file(const char* file_path)
@@ -44,8 +47,8 @@ namespace bko
 		// calculate dimensions
 		GLuint height = tile_data.size();
 		GLuint width = tile_data[0].size();
-		GLfloat brick_width = level_width / width;
-		GLfloat brick_height = level_height / height;
+		GLfloat brick_width = GLfloat(level_width) / GLfloat(width);
+		GLfloat brick_height = GLfloat(level_height) / GLfloat(height);
 
 		// initialize level tiles based on tileData		
 		for (GLuint y = 0; y < height; ++y)
@@ -56,8 +59,8 @@ namespace bko
 				// check block type from level data (2D level array)
 				if (tile_data[y][x] == 1) // Solid
 				{
-					object = game_object_new(Texture{},
-						vec3{ 0.0f, 0.0f, 0.0f },
+					object = game_object_new(resource_manager_texture(rm, "block_solid"),
+						vec3{ 0.8f, 0.8f, 0.7f },
 						vec2{ brick_width * x, brick_height * y },
 						vec2{ brick_width, brick_height },
 						vec2{},
@@ -79,7 +82,7 @@ namespace bko
 					else if (tile_data[y][x] == 5)
 						color = vec3{ 1.0f, 0.5f, 0.0f };
 
-					object = game_object_new(Texture{},
+					object = game_object_new(resource_manager_texture(rm, "block"),
 						color,
 						vec2{ brick_width * x, brick_height * y },
 						vec2{ brick_width, brick_height },

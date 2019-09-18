@@ -21,7 +21,7 @@ namespace bko
 		{
 			static IResource_Manager instance;
 			return &instance;
-		}		
+		}
 	};
 
 	RESOURCE_MANAGER_EXPORT void
