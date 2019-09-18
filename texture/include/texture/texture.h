@@ -27,6 +27,12 @@ namespace bko
 	TEXTURE_EXPORT void
 	texture_free(Texture self);
 
+	inline static void
+	destruct(Texture self)
+	{
+		texture_free(self);
+	}
+
 	TEXTURE_EXPORT void
 	texture_bind(Texture self, GLuint texture_unit);
 

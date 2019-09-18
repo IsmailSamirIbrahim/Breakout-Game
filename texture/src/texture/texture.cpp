@@ -4,7 +4,7 @@
 
 namespace bko
 {
-
+	// Helper Functions
 	inline static GLint
 	_map_format(Texture::FORMAT format)
 	{
@@ -22,6 +22,8 @@ namespace bko
 		}
 	}
 
+
+	// API
 	Texture
 	texture_new(GLuint width, GLuint height, unsigned char* image, Texture::FORMAT internal_format, Texture::FORMAT image_format)
 	{

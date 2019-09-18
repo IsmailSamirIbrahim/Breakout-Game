@@ -66,6 +66,7 @@ namespace bko
 	void
 	sprite_renderer_free(Sprite_Renderer self)
 	{
+		destruct(self->program);
 		glDeleteVertexArrays(1, &self->quad_vao);
 		::free(self);
 	}
@@ -79,12 +80,15 @@ namespace bko
 		// create model matrix
 		mat4 model = mat4(1.0);
 
+		// translate
 		model = translate(model, vec3{ object.position, 0.0f });
 
+		// rotate
 		model = translate(model, vec3{ 0.5f * object.size.x, 0.5f * object.size.y, 0.0f });
 		model = rotate(model, object.rotation_angle, vec3{ 0.0f, 0.0f, 1.0f });
 		model = translate(model, vec3(-0.5f * object.size.x, -0.5f * object.size.y, 0.0f));
 
+		// scale
 		model = scale(model, vec3{ object.size, 1.0f });
 
 		program_mat4f_set(self->program, "model", model);

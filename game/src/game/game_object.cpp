@@ -24,6 +24,6 @@ namespace bko
 	void
 	game_object_free(Game_Object self)
 	{
-		texture_free(self.texture);
+		destruct(self.texture);
 	}
 }

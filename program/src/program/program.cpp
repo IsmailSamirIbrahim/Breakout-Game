@@ -38,6 +38,7 @@ namespace bko
 		return;
 	}
 
+
 	// API
 	Program
 	program_new(const char* vertex_shader_source, const char* fragment_shader_source)

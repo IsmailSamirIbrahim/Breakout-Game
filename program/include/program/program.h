@@ -24,6 +24,12 @@ namespace bko
 	PROGRAM_EXPORT void
 	program_free(Program self);
 
+	inline static void
+	destruct(Program self)
+	{
+		program_free(self);
+	}
+
 	PROGRAM_EXPORT void
 	program_use(Program self);
 

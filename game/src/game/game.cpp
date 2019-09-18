@@ -12,39 +12,6 @@ using namespace bko;
 
 namespace bko
 {
-	// Helper Functions
-	inline static GLFWwindow*
-	glfw_create_window(GLsizei width, GLsizei height)
-	{
-		// initialize GLFW and set hints
-		glfwInit();
-		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-		glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
-
-		//create window
-		GLFWwindow* window = glfwCreateWindow(width, height, "Breakout", NULL, NULL);
-		if (window == NULL)
-		{
-			::printf("Failed to create GLFW window/n");
-			glfwTerminate();
-			return NULL;
-		}
-
-		glfwMakeContextCurrent(window);
-		
-		return window;
-	}
-
-	inline static void
-	glew_init()
-	{
-		glewExperimental = GL_TRUE;
-		glewInit();
-		glGetError(); // Call it once to catch glewInit() bug, all other errors are now from our application.
-	}
-
 	// API
 	Game
 	game_new(GLsizei width, GLsizei height)
@@ -52,13 +19,9 @@ namespace bko
 		Game self{};
 
 		self.state = Game::STATE_ACTIVE;
-		self.width = width;
-		self.height = height;
-		self.window = glfw_create_window(width, height);
+		self.window = window_new(width, height);
 		self.rm = IResource_Manager::get_instance();
 		self.sprite_renderer = nullptr;
-
-		glew_init();
 
 		return self;
 	}
@@ -66,9 +29,9 @@ namespace bko
 	void
 	game_free(Game self)
 	{
-		resource_manager_free(self.rm);
-		sprite_renderer_free(self.sprite_renderer);
-		glfwTerminate();
+		destruct(self.window);
+		destruct(self.rm);
+		destruct(self.sprite_renderer);
 	}
 
 	void
@@ -86,7 +49,7 @@ namespace bko
 		resource_manager_load_texture(self.rm, image_path.c_str(), "container");
 
 		// configure shaders
-		mat4 projection = ortho(0.0f, static_cast<GLfloat>(self.width), static_cast<GLfloat>(self.height), 0.0f, -1.0f, 1.0f);
+		mat4 projection = ortho(0.0f, static_cast<GLfloat>(self.window.width), static_cast<GLfloat>(self.window.height), 0.0f, -1.0f, 1.0f);
 		Program program = resource_manager_program(self.rm, "sprite");
 		program_use(program);
 		program_int_set(program, "image", 0);
@@ -99,8 +62,8 @@ namespace bko
 	inline static void
 	game_process_input(Game self, GLfloat delta_time)
 	{
-		if (glfwGetKey(self.window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-			glfwSetWindowShouldClose(self.window, true);
+		if (glfwGetKey(self.window.handle, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+			glfwSetWindowShouldClose(self.window.handle, true);
 	}
 
 	inline static void
@@ -117,14 +80,11 @@ namespace bko
 
 		Texture texture = resource_manager_texture(self.rm, "face");
 		Game_Object object{};
-		int k = 50;
-		for (int i = 0; i < 50; ++i) {
-			if (i * 50 % self.width != 0){
-				object = game_object_new(texture, vec3(1.0f, 1.0f, 1.0f), vec2((i * 50) % , 50 + k), vec2(50, 50), vec2{}, 0.0f, GL_FALSE, GL_FALSE);
+		int k = 0;
+		for (int i = 0; i < 200; ++i) {
+			if ((i * 50) % self.window.width == 0)
 				k += 50;
-			else
-				object = game_object_new(texture, vec3(1.0f, 1.0f, 1.0f), vec2((i * 50) % , 50), vec2(50, 50), vec2{}, 0.0f, GL_FALSE, GL_FALSE);
-
+			object = game_object_new(texture, vec3(1.0f, 1.0f, 1.0f), vec2((i * 50) % self.window.width, k), vec2(50, 50), vec2{}, 0.0f, GL_FALSE, GL_FALSE);
 			sprite_renderer_render(self.sprite_renderer, object);
 		}
 	}
@@ -133,7 +93,7 @@ namespace bko
 	game_run(Game self)
 	{
 		// render loop
-		while (!glfwWindowShouldClose(self.window))
+		while (!glfwWindowShouldClose(self.window.handle))
 		{
 			// input
 			game_process_input(self, 0);
@@ -142,7 +102,7 @@ namespace bko
 			game_render(self);
 
 			// swap buffers
-			glfwSwapBuffers(self.window);
+			glfwSwapBuffers(self.window.handle);
 
 			// poll events
 			glfwPollEvents();

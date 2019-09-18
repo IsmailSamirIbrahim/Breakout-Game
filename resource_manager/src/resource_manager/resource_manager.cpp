@@ -70,11 +70,11 @@ namespace bko
 	{
 		// delete all programs
 		for (auto program : self->programs)
-			program_free(program.second);
+			destruct(program.second);
 
 		// delete all textures
 		for (auto texture : self->textures)
-			texture_free(texture.second);
+			destruct(texture.second);
 	}
 
 	void

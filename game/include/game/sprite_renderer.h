@@ -19,6 +19,12 @@ namespace bko
 	GAME_EXPORT void
 	sprite_renderer_free(Sprite_Renderer self);
 
+	inline static void
+	destruct(Sprite_Renderer self)
+	{
+		sprite_renderer_free(self);
+	}
+
 	GAME_EXPORT void
 	sprite_renderer_render(Sprite_Renderer self, Game_Object object);
 

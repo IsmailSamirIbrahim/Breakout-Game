@@ -27,4 +27,10 @@ namespace bko
 	GAME_EXPORT void
 	game_object_free(Game_Object self);
 
+	inline static void
+	destruct(Game_Object self)
+	{
+		game_object_free(self);
+	}
+
 } //namespace end
