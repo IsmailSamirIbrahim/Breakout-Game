@@ -59,12 +59,10 @@ namespace bko
 				// check block type from level data (2D level array)
 				if (tile_data[y][x] == 1) // Solid
 				{
-					object = game_object_new(resource_manager_texture(rm, "block_solid"),
+					object = game_object_brick_new(resource_manager_texture(rm, "block_solid"),
 						vec3{ 0.8f, 0.8f, 0.7f },
 						vec2{ brick_width * x, brick_height * y },
 						vec2{ brick_width, brick_height },
-						vec2{},
-						0.0f,
 						GL_TRUE,
 						GL_FALSE);
 
@@ -82,12 +80,10 @@ namespace bko
 					else if (tile_data[y][x] == 5)
 						color = vec3{ 1.0f, 0.5f, 0.0f };
 
-					object = game_object_new(resource_manager_texture(rm, "block"),
+					object = game_object_brick_new(resource_manager_texture(rm, "block"),
 						color,
 						vec2{ brick_width * x, brick_height * y },
 						vec2{ brick_width, brick_height },
-						vec2{},
-						0.0f,
 						GL_FALSE,
 						GL_FALSE);
 
@@ -121,7 +117,7 @@ namespace bko
 	game_level_is_complete(Game_Level self)
 	{
 		for (auto brick : self.bricks)
-			if (!brick.is_solid && !brick.is_destroyed)
+			if (!brick.brick.is_solid && !brick.brick.is_destroyed)
 				return GL_FALSE;
 		return GL_TRUE;
 	}

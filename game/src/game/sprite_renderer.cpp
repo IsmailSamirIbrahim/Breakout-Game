@@ -85,7 +85,7 @@ namespace bko
 
 		// rotate
 		model = translate(model, vec3{ 0.5f * object.size.x, 0.5f * object.size.y, 0.0f });
-		model = rotate(model, object.rotation_angle, vec3{ 0.0f, 0.0f, 1.0f });
+		model = rotate(model, 0.0f, vec3{ 0.0f, 0.0f, 1.0f });
 		model = translate(model, vec3(-0.5f * object.size.x, -0.5f * object.size.y, 0.0f));
 
 		// scale

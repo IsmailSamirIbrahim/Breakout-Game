@@ -23,6 +23,7 @@ namespace bko
 		std::vector<Game_Level> levels;
 		GLuint current_level;
 		Game_Object player;
+		Game_Object ball;
 		Window window;
 		Sprite_Renderer sprite_renderer;
 	};

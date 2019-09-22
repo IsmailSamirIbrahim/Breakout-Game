@@ -14,7 +14,39 @@ using namespace bko;
 
 namespace bko
 {
+#define PLAYER_PADDLE_SIZE vec2{100.0, 20.0f}
+#define PLAYER_PADDLE_VELOCITY vec2 {500.0f, 0.0f}
+#define BALL_RADIUS 12.5f
+#define BALL_VELOCITY vec2 {100.0f, -350.0f}
+
 	static Resource_Manager rm = IResource_Manager::get_instance();
+
+
+	//Helper functions
+	inline static void
+	_game_ball_update(Game& self, GLfloat delta_time)
+	{
+		if (!self.ball.ball.is_stuck)
+		{
+			self.ball.position += self.ball.ball.velocity * delta_time;
+
+			if (self.ball.position.x <= 0.0f)
+			{
+				self.ball.ball.velocity.x *= -1;
+				self.ball.position.x = 0.0f;
+			}
+			else if (self.ball.position.x + self.ball.size.x >= self.window.width)
+			{
+				self.ball.ball.velocity.x *= -1;
+				self.ball.position.x = self.window.width - self.ball.size.x;
+			}
+			if (self.ball.position.y <= 0.0f)
+			{
+				self.ball.ball.velocity.y *= -1;
+				self.ball.position.y = 0.0f;
+			}
+		}
+	}
 
 	// API
 	Game
@@ -23,8 +55,9 @@ namespace bko
 		Game self{};
 
 		self.state = Game::STATE_ACTIVE;
-		self.current_level = 4;
+		self.current_level = 1;
 		self.player = Game_Object{};
+		self.ball = Game_Object{};
 		self.window = window_new(width, height);
 		self.sprite_renderer = nullptr;
 
@@ -37,6 +70,8 @@ namespace bko
 		for(auto level : self.levels)
 			destruct(level);
 
+		destruct(self.player);
+		destruct(self.ball);
 		destruct(self.window);
 		destruct(self.sprite_renderer);
 	}
@@ -61,6 +96,9 @@ namespace bko
 
 		image_path = std::string(IMAGE_DIR) + std::string("/images/paddle.png");
 		resource_manager_load_texture(rm, image_path.c_str(), "paddle");
+
+		image_path = std::string(IMAGE_DIR) + std::string("/images/ball.png");
+		resource_manager_load_texture(rm, image_path.c_str(), "ball");
 
 		// load levels
 		string level_path = std::string(LEVEL_DIR) + std::string("/levels/standard.lvl");
@@ -91,14 +129,16 @@ namespace bko
 
 		// player initialization
 		Texture texture = resource_manager_texture(rm, "paddle");
-		self.player = game_object_new(texture,
-			vec3{1.0f, 1.0f, 1.0f},
-			vec2{ self.window.width / 2 - 100 / 2, self.window.height - 20 },
-			vec2{ 100.0, 20.0f },
-			vec2{ 500.0f, 0.0f },
-			0.0f,
-			GL_FALSE,
-			GL_FALSE);
+		self.player = game_object_player_paddle_new(texture,
+			vec2{ self.window.width / 2 - PLAYER_PADDLE_SIZE.x / 2, self.window.height - PLAYER_PADDLE_SIZE.y },
+			PLAYER_PADDLE_SIZE,
+			PLAYER_PADDLE_VELOCITY
+		);
+
+		// ball initialization
+		texture = resource_manager_texture(rm, "ball");
+		vec2 ball_pos = self.player.position + vec2{ self.player.size.x / 2 - 12.5f, -1 * BALL_RADIUS * 2 };
+		self.ball = game_object_ball_new(texture, ball_pos, BALL_RADIUS, BALL_VELOCITY, GL_TRUE);
 	}
 
 	inline static void
@@ -121,24 +161,44 @@ namespace bko
 			if (glfwGetKey(self.window.handle, GLFW_KEY_D) == GLFW_RELEASE)
 				self.keys[GLFW_KEY_D] = GL_FALSE;
 
-			GLfloat velocity = self.player.velocity.x * delta_time;
+			if (glfwGetKey(self.window.handle, GLFW_KEY_SPACE) == GLFW_PRESS)
+				self.keys[GLFW_KEY_SPACE] = GL_TRUE;
+
+			if (glfwGetKey(self.window.handle, GLFW_KEY_SPACE) == GLFW_RELEASE)
+				self.keys[GLFW_KEY_SPACE] = GL_FALSE;
+
+			GLfloat velocity = self.player.player_paddle.velocity.x * delta_time;
 			if (self.keys[GLFW_KEY_A])
 			{
 				if (self.player.position.x >= 0)
+				{
 					self.player.position.x -= velocity;
+
+					if (self.ball.ball.is_stuck)
+						self.ball.position.x -= velocity;
+				}
 			}
 			if (self.keys[GLFW_KEY_D])
 			{
 				if (self.player.position.x <= self.window.width - self.player.size.x)
+				{
 					self.player.position.x += velocity;
+					if (self.ball.ball.is_stuck)
+						self.ball.position.x += velocity;
+				}
+
+			}
+			if (self.keys[GLFW_KEY_SPACE])
+			{
+				self.ball.ball.is_stuck = GL_FALSE;
 			}
 		}
 	}
 
 	inline static void
-	game_update(Game self, GLfloat delta_time)
+	game_update(Game& self, GLfloat delta_time)
 	{
-
+		_game_ball_update(self, delta_time);
 	}
 
 	inline static void
@@ -148,23 +208,22 @@ namespace bko
 		{
 			// render background
 			Texture bkg = resource_manager_texture(rm, "background");
-			Game_Object object = game_object_new(bkg,
-				vec3{ 1.0f, 1.0f, 1.0f },
+			Game_Object object = game_object_background_new(bkg,
 				vec2{ 0.0f, 0.0f},
-				vec2{ self.window.width, self.window.height },
-				vec2{},
-				0.0f,
-				GL_FALSE,
-				GL_FALSE);
+				vec2{ self.window.width, self.window.height }
+			);
 			sprite_renderer_render(self.sprite_renderer, object);
 
 			// render level
 			for (auto object : self.levels[self.current_level - 1].bricks)
-				if (!object.is_destroyed)
+				if (!object.brick.is_destroyed)
 					sprite_renderer_render(self.sprite_renderer, object);
 
 			//render player paddle
 			sprite_renderer_render(self.sprite_renderer, self.player);
+
+			//render ball
+			sprite_renderer_render(self.sprite_renderer, self.ball);
 		}
 	}
 
@@ -182,6 +241,9 @@ namespace bko
 			last_frame = current_frame;
 			// input
 			game_process_input(self, delta_time);
+
+			//update
+			game_update(self, delta_time);
 
 			// render stuff
 			game_render(self);
