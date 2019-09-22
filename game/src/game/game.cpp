@@ -95,7 +95,7 @@ namespace bko
 			vec3{1.0f, 1.0f, 1.0f},
 			vec2{ self.window.width / 2 - 100 / 2, self.window.height - 20 },
 			vec2{ 100.0, 20.0f },
-			vec2{ 15.0f, 0.0f },
+			vec2{ 500.0f, 0.0f },
 			0.0f,
 			GL_FALSE,
 			GL_FALSE);
@@ -171,11 +171,17 @@ namespace bko
 	void
 	game_run(Game self)
 	{
+		float current_frame;
+		float delta_time = 0.0f;
+		float last_frame = 0.0f;
 		// render loop
 		while (!glfwWindowShouldClose(self.window.handle))
 		{
+			current_frame = glfwGetTime();
+			delta_time = current_frame - last_frame;
+			last_frame = current_frame;
 			// input
-			game_process_input(self, 0.1);
+			game_process_input(self, delta_time);
 
 			// render stuff
 			game_render(self);
