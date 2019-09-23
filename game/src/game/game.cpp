@@ -48,6 +48,28 @@ namespace bko
 		}
 	}
 
+	inline static bool
+	_game_collision_check(const Game_Object& obj1, const Game_Object& obj2)
+	{
+		GLboolean x_collision = (obj1.position.x + obj1.size.x >= obj2.position.x) && (obj2.position.x + obj2.size.x >= obj1.position.x);
+		GLboolean y_collision = (obj1.position.y + obj1.size.y >= obj2.position.y) && (obj2.position.y + obj2.size.y >= obj1.position.y);
+
+		return x_collision && y_collision;
+	}
+
+	inline static void
+	_game_do_collisions(Game& self)
+	{
+		for (Game_Object& brick : self.levels[self.current_level - 1].bricks)
+		{
+			if (!brick.brick.is_destroyed)
+				if (_game_collision_check(self.ball, brick))
+					if (!brick.brick.is_solid)
+						brick.brick.is_destroyed = GL_TRUE;
+		}
+	}
+	
+	
 	// API
 	Game
 	game_new(GLsizei width, GLsizei height)
@@ -199,6 +221,7 @@ namespace bko
 	game_update(Game& self, GLfloat delta_time)
 	{
 		_game_ball_update(self, delta_time);
+		_game_do_collisions(self);
 	}
 
 	inline static void

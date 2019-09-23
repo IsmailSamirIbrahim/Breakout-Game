@@ -35,6 +35,11 @@ namespace bko
 		glewInit();
 		glGetError(); // Call it once to catch glewInit() bug, all other errors are now from our application.
 
+
+		glEnable(GL_CULL_FACE);
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
 		return self;
 	}
 

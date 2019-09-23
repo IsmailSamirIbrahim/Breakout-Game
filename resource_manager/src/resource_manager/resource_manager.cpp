@@ -54,7 +54,7 @@ namespace bko
 		Texture texture{};
 
 		if (channels == 4)
-			texture = texture_new(width, height, image, Texture::FORMAT_RGB, Texture::FORMAT_RGBA);
+			texture = texture_new(width, height, image, Texture::FORMAT_RGBA, Texture::FORMAT_RGBA);
 		else
 			texture = texture_new(width, height, image, Texture::FORMAT_RGB, Texture::FORMAT_RGB);
 
