@@ -20,6 +20,7 @@ add_subdirectory(game)
 add_subdirectory(program)
 add_subdirectory(texture)
 add_subdirectory(resource_manager)
+add_subdirectory(renderer)
 
 # Organize Targets into folders
 set_target_properties(
@@ -27,6 +28,7 @@ set_target_properties(
 	program
 	texture
 	resource_manager
+	renderer
 	PROPERTIES FOLDER Game
 )
 

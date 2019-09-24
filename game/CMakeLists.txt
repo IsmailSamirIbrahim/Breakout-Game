@@ -3,8 +3,6 @@ cmake_minimum_required(VERSION 3.9)
 # list the header files
 set(HEADER_FILES
 	include/game/game.h
-	include/game/sprite_renderer.h
-	include/game/window.h
 	include/game/game_level.h
 	include/component/sprite.h
 	include/component/background.h
@@ -16,8 +14,6 @@ set(HEADER_FILES
 # list the source files
 set(SOURCE_FILES
 	src/game/game.cpp
-	src/game/sprite_renderer.cpp
-	src/game/window.cpp
 	src/game/game_level.cpp
 	src/component/background.cpp
 	src/component/brick.cpp
@@ -40,6 +36,7 @@ target_link_libraries(game
 	glm
 	program
 	texture
+	renderer
 )
 
 # make it reflect the same structure as the one on disk

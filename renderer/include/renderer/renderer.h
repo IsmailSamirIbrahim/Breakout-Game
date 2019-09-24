@@ -2,7 +2,7 @@
 
 #include "game/Exports.h"
 
-#include "component/sprite.h"
+#include <component/sprite.h>
 
 #include <program/program.h>
 

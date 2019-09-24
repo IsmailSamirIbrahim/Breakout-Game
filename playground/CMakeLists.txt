@@ -24,6 +24,7 @@ target_link_libraries(playground
 		program
 		texture
 		resource_manager
+		renderer
 )
 
 # Windows specfic flags to enable W variations of winapi

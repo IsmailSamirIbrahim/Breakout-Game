@@ -1,11 +1,12 @@
 #pragma once
 
 #include "game/Exports.h"
-#include "game/sprite_renderer.h"
-#include "game/window.h"
 #include "game/game_level.h"
 #include "component/player_paddle.h"
 #include "component/ball.h"
+
+#include <renderer/renderer.h>
+#include <renderer/window.h>
 
 #include <vector>
 

@@ -49,27 +49,34 @@ namespace bko
 	}
 
 	inline static bool
-	_game_collision_check(const Ball& obj1, const Brick& obj2)
+	_game_collision_check(const Ball& ball, const Brick& brick)
 	{
-		GLboolean x_collision = (obj1.sprite.position.x + obj1.sprite.size.x >= obj2.sprite.position.x)
-							  &&(obj2.sprite.position.x + obj2.sprite.size.x >= obj1.sprite.position.x);
+		// Get center point of the circle
+		vec2 ball_center = vec2{ ball.sprite.position + ball.radius };
 
-		GLboolean y_collision = (obj1.sprite.position.y + obj1.sprite.size.y >= obj2.sprite.position.y)
-							  &&(obj2.sprite.position.y + obj2.sprite.size.y >= obj1.sprite.position.y);
+		// Calculate brick info (center, half-extents)
+		vec2 half_extents = vec2{ brick.sprite.size.x / 2.0f, brick.sprite.size.y / 2.0 };
+		vec2 brick_center = vec2{ brick.sprite.position.x + half_extents.x, brick.sprite.position.y + half_extents.y };
+		// Get difference vector between both centers
+		vec2 diff_center = ball_center - brick_center;
+		vec2 clamped = clamp(diff_center, -half_extents, half_extents);
 
-		return x_collision && y_collision;
+		//Add clamped value to brick_center and we get the value of box closest to circle
+		vec2 closest_point = brick_center + clamped;
+
+		vec2 difference = closest_point - ball_center;
+
+		return length(difference) < ball.radius;
 	}
 
 	inline static void
 	_game_do_collisions(Game& self)
 	{
 		for (Brick& brick : self.levels[self.current_level - 1].bricks)
-		{
 			if (!brick.is_destroyed)
 				if (_game_collision_check(self.ball, brick))
 					if (!brick.is_solid)
 						brick.is_destroyed = GL_TRUE;
-		}
 	}
 	
 	

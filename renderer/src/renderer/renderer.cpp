@@ -1,4 +1,4 @@
-#include "game/sprite_renderer.h"
+#include "renderer/renderer.h"
 
 #include <GL/glew.h>
 
