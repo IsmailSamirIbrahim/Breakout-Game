@@ -1,5 +1,8 @@
-#include <game/sprite_renderer.h>
+#include "game/sprite_renderer.h"
 
+#include <GL/glew.h>
+
+#include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
 using namespace glm;
@@ -72,7 +75,7 @@ namespace bko
 	}
 	
 	void
-	sprite_renderer_render(Sprite_Renderer self, Game_Object object)
+	sprite_renderer_render(Sprite_Renderer self, Sprite sprite)
 	{
 		// use program
 		program_use(self->program);
@@ -81,20 +84,20 @@ namespace bko
 		mat4 model = mat4(1.0);
 
 		// translate
-		model = translate(model, vec3{ object.position, 0.0f });
+		model = translate(model, vec3{ sprite.position, 0.0f });
 
 		// rotate
-		model = translate(model, vec3{ 0.5f * object.size.x, 0.5f * object.size.y, 0.0f });
+		model = translate(model, vec3{ 0.5f * sprite.size.x, 0.5f * sprite.size.y, 0.0f });
 		model = rotate(model, 0.0f, vec3{ 0.0f, 0.0f, 1.0f });
-		model = translate(model, vec3(-0.5f * object.size.x, -0.5f * object.size.y, 0.0f));
+		model = translate(model, vec3(-0.5f * sprite.size.x, -0.5f * sprite.size.y, 0.0f));
 
 		// scale
-		model = scale(model, vec3{ object.size, 1.0f });
+		model = scale(model, vec3{ sprite.size, 1.0f });
 
 		program_mat4f_set(self->program, "model", model);
-		program_vec3f_set(self->program, "spriteColor", object.color);
+		program_vec3f_set(self->program, "spriteColor", sprite.color);
 
-		texture_bind(object.texture, GL_TEXTURE0);
+		texture_bind(sprite.texture, GL_TEXTURE0);
 
 		//draw
 		glBindVertexArray(self->quad_vao);

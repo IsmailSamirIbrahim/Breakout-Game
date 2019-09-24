@@ -1,5 +1,5 @@
 #include "game/game.h"
-#include "game/game_object.h"
+#include "component/background.h"
 
 #include <glm/gtc/matrix_transform.hpp>
 
@@ -26,33 +26,36 @@ namespace bko
 	inline static void
 	_game_ball_update(Game& self, GLfloat delta_time)
 	{
-		if (!self.ball.ball.is_stuck)
+		if (!self.ball.is_stuck)
 		{
-			self.ball.position += self.ball.ball.velocity * delta_time;
+			self.ball.sprite.position += self.ball.velocity * delta_time;
 
-			if (self.ball.position.x <= 0.0f)
+			if (self.ball.sprite.position.x <= 0.0f)
 			{
-				self.ball.ball.velocity.x *= -1;
-				self.ball.position.x = 0.0f;
+				self.ball.velocity.x *= -1;
+				self.ball.sprite.position.x = 0.0f;
 			}
-			else if (self.ball.position.x + self.ball.size.x >= self.window.width)
+			else if (self.ball.sprite.position.x + self.ball.sprite.size.x >= self.window.width)
 			{
-				self.ball.ball.velocity.x *= -1;
-				self.ball.position.x = self.window.width - self.ball.size.x;
+				self.ball.velocity.x *= -1;
+				self.ball.sprite.position.x = self.window.width - self.ball.sprite.size.x;
 			}
-			if (self.ball.position.y <= 0.0f)
+			if (self.ball.sprite.position.y <= 0.0f)
 			{
-				self.ball.ball.velocity.y *= -1;
-				self.ball.position.y = 0.0f;
+				self.ball.velocity.y *= -1;
+				self.ball.sprite.position.y = 0.0f;
 			}
 		}
 	}
 
 	inline static bool
-	_game_collision_check(const Game_Object& obj1, const Game_Object& obj2)
+	_game_collision_check(const Ball& obj1, const Brick& obj2)
 	{
-		GLboolean x_collision = (obj1.position.x + obj1.size.x >= obj2.position.x) && (obj2.position.x + obj2.size.x >= obj1.position.x);
-		GLboolean y_collision = (obj1.position.y + obj1.size.y >= obj2.position.y) && (obj2.position.y + obj2.size.y >= obj1.position.y);
+		GLboolean x_collision = (obj1.sprite.position.x + obj1.sprite.size.x >= obj2.sprite.position.x)
+							  &&(obj2.sprite.position.x + obj2.sprite.size.x >= obj1.sprite.position.x);
+
+		GLboolean y_collision = (obj1.sprite.position.y + obj1.sprite.size.y >= obj2.sprite.position.y)
+							  &&(obj2.sprite.position.y + obj2.sprite.size.y >= obj1.sprite.position.y);
 
 		return x_collision && y_collision;
 	}
@@ -60,12 +63,12 @@ namespace bko
 	inline static void
 	_game_do_collisions(Game& self)
 	{
-		for (Game_Object& brick : self.levels[self.current_level - 1].bricks)
+		for (Brick& brick : self.levels[self.current_level - 1].bricks)
 		{
-			if (!brick.brick.is_destroyed)
+			if (!brick.is_destroyed)
 				if (_game_collision_check(self.ball, brick))
-					if (!brick.brick.is_solid)
-						brick.brick.is_destroyed = GL_TRUE;
+					if (!brick.is_solid)
+						brick.is_destroyed = GL_TRUE;
 		}
 	}
 	
@@ -78,8 +81,8 @@ namespace bko
 
 		self.state = Game::STATE_ACTIVE;
 		self.current_level = 1;
-		self.player = Game_Object{};
-		self.ball = Game_Object{};
+		self.player = Player_Paddle{};
+		self.ball = Ball{};
 		self.window = window_new(width, height);
 		self.sprite_renderer = nullptr;
 
@@ -124,19 +127,19 @@ namespace bko
 
 		// load levels
 		string level_path = std::string(LEVEL_DIR) + std::string("/levels/standard.lvl");
-		Game_Level level = game_level_new(self.window.width, self.window.height * 0.5, level_path.c_str());
+		Level level = level_new(self.window.width, self.window.height * 0.5, level_path.c_str());
 		self.levels.push_back(level);
 
 		level_path = std::string(LEVEL_DIR) + std::string("/levels/few_small_gaps.lvl");
-		level = game_level_new(self.window.width, self.window.height * 0.5, level_path.c_str());
+		level = level_new(self.window.width, self.window.height * 0.5, level_path.c_str());
 		self.levels.push_back(level);
 
 		level_path = std::string(LEVEL_DIR) + std::string("/levels/space_invader.lvl");
-		level = game_level_new(self.window.width, self.window.height * 0.5, level_path.c_str());
+		level = level_new(self.window.width, self.window.height * 0.5, level_path.c_str());
 		self.levels.push_back(level);
 
 		level_path = std::string(LEVEL_DIR) + std::string("/levels/bounce_galore.lvl");
-		level = game_level_new(self.window.width, self.window.height * 0.5, level_path.c_str());
+		level = level_new(self.window.width, self.window.height * 0.5, level_path.c_str());
 		self.levels.push_back(level);
 
 		// configure shaders
@@ -151,7 +154,7 @@ namespace bko
 
 		// player initialization
 		Texture texture = resource_manager_texture(rm, "paddle");
-		self.player = game_object_player_paddle_new(texture,
+		self.player = player_paddle_new(texture,
 			vec2{ self.window.width / 2 - PLAYER_PADDLE_SIZE.x / 2, self.window.height - PLAYER_PADDLE_SIZE.y },
 			PLAYER_PADDLE_SIZE,
 			PLAYER_PADDLE_VELOCITY
@@ -159,8 +162,8 @@ namespace bko
 
 		// ball initialization
 		texture = resource_manager_texture(rm, "ball");
-		vec2 ball_pos = self.player.position + vec2{ self.player.size.x / 2 - 12.5f, -1 * BALL_RADIUS * 2 };
-		self.ball = game_object_ball_new(texture, ball_pos, BALL_RADIUS, BALL_VELOCITY, GL_TRUE);
+		vec2 ball_pos = self.player.sprite.position + vec2{ self.player.sprite.size.x / 2 - 12.5f, -1 * BALL_RADIUS * 2 };
+		self.ball = ball_new(texture, ball_pos, BALL_VELOCITY, BALL_RADIUS, GL_TRUE);
 	}
 
 	inline static void
@@ -189,30 +192,29 @@ namespace bko
 			if (glfwGetKey(self.window.handle, GLFW_KEY_SPACE) == GLFW_RELEASE)
 				self.keys[GLFW_KEY_SPACE] = GL_FALSE;
 
-			GLfloat velocity = self.player.player_paddle.velocity.x * delta_time;
+			GLfloat velocity = self.player.velocity.x * delta_time;
 			if (self.keys[GLFW_KEY_A])
 			{
-				if (self.player.position.x >= 0)
+				if (self.player.sprite.position.x >= 0)
 				{
-					self.player.position.x -= velocity;
-
-					if (self.ball.ball.is_stuck)
-						self.ball.position.x -= velocity;
+					self.player.sprite.position.x -= velocity;
+					if (self.ball.is_stuck)
+						self.ball.sprite.position.x -= velocity;
 				}
 			}
 			if (self.keys[GLFW_KEY_D])
 			{
-				if (self.player.position.x <= self.window.width - self.player.size.x)
+				if (self.player.sprite.position.x <= self.window.width - self.player.sprite.size.x)
 				{
-					self.player.position.x += velocity;
-					if (self.ball.ball.is_stuck)
-						self.ball.position.x += velocity;
+					self.player.sprite.position.x += velocity;
+					if (self.ball.is_stuck)
+						self.ball.sprite.position.x += velocity;
 				}
 
 			}
 			if (self.keys[GLFW_KEY_SPACE])
 			{
-				self.ball.ball.is_stuck = GL_FALSE;
+				self.ball.is_stuck = GL_FALSE;
 			}
 		}
 	}
@@ -231,22 +233,19 @@ namespace bko
 		{
 			// render background
 			Texture bkg = resource_manager_texture(rm, "background");
-			Game_Object object = game_object_background_new(bkg,
-				vec2{ 0.0f, 0.0f},
-				vec2{ self.window.width, self.window.height }
-			);
-			sprite_renderer_render(self.sprite_renderer, object);
+			Background background = background_new(bkg, vec2{ 0.0f, 0.0f }, vec2{ self.window.width, self.window.height });
+			sprite_renderer_render(self.sprite_renderer, background.sprite);
 
 			// render level
-			for (auto object : self.levels[self.current_level - 1].bricks)
-				if (!object.brick.is_destroyed)
-					sprite_renderer_render(self.sprite_renderer, object);
+			for (auto brick : self.levels[self.current_level - 1].bricks)
+				if (!brick.is_destroyed)
+					sprite_renderer_render(self.sprite_renderer, brick.sprite);
 
 			//render player paddle
-			sprite_renderer_render(self.sprite_renderer, self.player);
+			sprite_renderer_render(self.sprite_renderer, self.player.sprite);
 
 			//render ball
-			sprite_renderer_render(self.sprite_renderer, self.ball);
+			sprite_renderer_render(self.sprite_renderer, self.ball.sprite);
 		}
 	}
 

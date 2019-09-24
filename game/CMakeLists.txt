@@ -4,18 +4,25 @@ cmake_minimum_required(VERSION 3.9)
 set(HEADER_FILES
 	include/game/game.h
 	include/game/sprite_renderer.h
-	include/game/game_object.h
 	include/game/window.h
 	include/game/game_level.h
+	include/component/sprite.h
+	include/component/background.h
+	include/component/brick.h
+	include/component/player_paddle.h
+	include/component/ball.h
 )
 
 # list the source files
 set(SOURCE_FILES
 	src/game/game.cpp
 	src/game/sprite_renderer.cpp
-	src/game/game_object.cpp
 	src/game/window.cpp
 	src/game/game_level.cpp
+	src/component/background.cpp
+	src/component/brick.cpp
+	src/component/player_paddle.cpp
+	src/component/ball.cpp
 )
 
 

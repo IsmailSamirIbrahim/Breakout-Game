@@ -42,7 +42,7 @@ namespace bko
 	}
 
 	inline static void
-	_init_level(vector<vector<GLuint>> tile_data, GLuint level_width, GLuint level_height, vector<Game_Object>& level)
+	_init_level(vector<vector<GLuint>> tile_data, GLuint level_width, GLuint level_height, vector<Brick>& level)
 	{
 		// calculate dimensions
 		GLuint height = tile_data.size();
@@ -55,18 +55,18 @@ namespace bko
 		{
 			for (GLuint x = 0; x < width; ++x)
 			{
-				Game_Object object{};
+				Brick brick{};
 				// check block type from level data (2D level array)
 				if (tile_data[y][x] == 1) // Solid
 				{
-					object = game_object_brick_new(resource_manager_texture(rm, "block_solid"),
+					brick = brick_new(resource_manager_texture(rm, "block_solid"),
 						vec3{ 0.8f, 0.8f, 0.7f },
 						vec2{ brick_width * x, brick_height * y },
 						vec2{ brick_width, brick_height },
 						GL_TRUE,
 						GL_FALSE);
 
-					level.push_back(object);
+					level.push_back(brick);
 				}
 				else if (tile_data[y][x] > 1)	// Non-solid; now determine its color based on level data
 				{
@@ -80,14 +80,14 @@ namespace bko
 					else if (tile_data[y][x] == 5)
 						color = vec3{ 1.0f, 0.5f, 0.0f };
 
-					object = game_object_brick_new(resource_manager_texture(rm, "block"),
+					brick = brick_new(resource_manager_texture(rm, "block"),
 						color,
 						vec2{ brick_width * x, brick_height * y },
 						vec2{ brick_width, brick_height },
 						GL_FALSE,
 						GL_FALSE);
 
-					level.push_back(object);
+					level.push_back(brick);
 				}
 			}
 		}
@@ -95,10 +95,10 @@ namespace bko
 
 
 	// API
-	Game_Level
-	game_level_new(GLuint level_width, GLuint level_height, const char* file_path)
+	Level
+	level_new(GLuint level_width, GLuint level_height, const char* file_path)
 	{
-		Game_Level self{};
+		Level self{};
 
 		vector<vector<GLuint>> tile_data = _load_level_from_file(file_path);
 		_init_level(tile_data, level_width, level_height, self.bricks);
@@ -107,17 +107,17 @@ namespace bko
 	}
 
 	void
-	game_level_free(Game_Level self)
+	level_free(Level self)
 	{
 		for (auto brick : self.bricks)
 			destruct(brick);
 	}
 	
 	GLboolean
-	game_level_is_complete(Game_Level self)
+	level_is_complete(Level self)
 	{
 		for (auto brick : self.bricks)
-			if (!brick.brick.is_solid && !brick.brick.is_destroyed)
+			if (!brick.is_solid && !brick.is_destroyed)
 				return GL_FALSE;
 		return GL_TRUE;
 	}

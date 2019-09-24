@@ -1,13 +1,10 @@
 #pragma once
 
 #include "game/Exports.h"
-#include "game/game_object.h"
 
-#include <GL/glew.h>
-#include <glm/glm.hpp>
+#include "component/sprite.h"
 
 #include <program/program.h>
-#include <texture/texture.h>
 
 namespace bko
 {
@@ -26,6 +23,6 @@ namespace bko
 	}
 
 	GAME_EXPORT void
-	sprite_renderer_render(Sprite_Renderer self, Game_Object object);
+	sprite_renderer_render(Sprite_Renderer self, Sprite sprite);
 
 } //namespace end
