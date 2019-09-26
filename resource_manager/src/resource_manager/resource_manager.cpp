@@ -34,6 +34,12 @@ namespace bko
 		string vertex_source = vshader_stream.str();
 		string fragment_source = fshader_stream.str();
 
+		if (vertex_source.empty() || fragment_source.empty())
+		{
+			printf("ERROR:: Can't load shaders\n");
+			return Program{};
+		}
+
 		// now create program object from shaders source code
 		Program program = program_new(vertex_source.c_str(), fragment_source.c_str());
 
@@ -47,6 +53,12 @@ namespace bko
 		stbi_set_flip_vertically_on_load(true);
 		int width, height, channels;
 		unsigned char* image = stbi_load(image_path, &width, &height, &channels, 0);
+
+		if (image == NULL)
+		{
+			printf("ERROR:: Can't load texture\n");
+			return Texture{};
+		}
 		
 		int internal_format;
 		int image_format;
@@ -54,9 +66,9 @@ namespace bko
 		Texture texture{};
 
 		if (channels == 4)
-			texture = texture_new(width, height, image, Texture::FORMAT_RGBA, Texture::FORMAT_RGBA);
+			texture = texture_new(width, height, image, Texture::RGBA, Texture::RGBA);
 		else
-			texture = texture_new(width, height, image, Texture::FORMAT_RGB, Texture::FORMAT_RGB);
+			texture = texture_new(width, height, image, Texture::RGB, Texture::RGB);
 
 		stbi_image_free(image);
 

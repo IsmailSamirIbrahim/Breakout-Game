@@ -6,14 +6,14 @@ namespace bko
 {
 	// Helper Functions
 	inline static GLint
-	_map_format(Texture::FORMAT format)
+	_map_format(Texture::PIXEL_FORMAT format)
 	{
 		switch (format)
 		{
-		case Texture::FORMAT_RGB:
+		case Texture::RGB:
 			return GL_RGB;
 
-		case Texture::FORMAT_RGBA:
+		case Texture::RGBA:
 			return GL_RGBA;
 
 		default:
@@ -25,7 +25,7 @@ namespace bko
 
 	// API
 	Texture
-	texture_new(GLuint width, GLuint height, unsigned char* image, Texture::FORMAT internal_format, Texture::FORMAT image_format)
+	texture_new(GLuint width, GLuint height, unsigned char* image, Texture::PIXEL_FORMAT internal_format, Texture::PIXEL_FORMAT image_format)
 	{
 		Texture self{};
 

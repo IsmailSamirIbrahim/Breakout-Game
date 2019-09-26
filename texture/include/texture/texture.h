@@ -8,10 +8,10 @@ namespace bko
 {
 	struct Texture
 	{
-		enum FORMAT 
+		enum PIXEL_FORMAT 
 		{ 
-			FORMAT_RGB,
-			FORMAT_RGBA
+			RGB,
+			RGBA
 		};
 
 		GLuint id;
@@ -22,7 +22,7 @@ namespace bko
 	};
 
 	TEXTURE_EXPORT Texture
-	texture_new(GLuint width, GLuint height, unsigned char* image, Texture::FORMAT internal_format, Texture::FORMAT image_format);
+	texture_new(GLuint width, GLuint height, unsigned char* image, Texture::PIXEL_FORMAT internal_format, Texture::PIXEL_FORMAT image_format);
 
 	TEXTURE_EXPORT void
 	texture_free(Texture self);

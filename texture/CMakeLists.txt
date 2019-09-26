@@ -22,7 +22,7 @@ source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${HEADER_FILES})
 source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${SOURCE_FILES})
 
 target_link_libraries(texture
-	PRIVATE
+	PUBLIC
 		glew
 		glm
 )
