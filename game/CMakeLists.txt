@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.9)
 # list the header files
 set(HEADER_FILES
 	include/game/game.h
-	include/game/game_level.h
+	include/component/level.h
 	include/component/sprite.h
 	include/component/background.h
 	include/component/brick.h
@@ -14,7 +14,7 @@ set(HEADER_FILES
 # list the source files
 set(SOURCE_FILES
 	src/game/game.cpp
-	src/game/game_level.cpp
+	src/component/level.cpp
 	src/component/background.cpp
 	src/component/brick.cpp
 	src/component/player_paddle.cpp

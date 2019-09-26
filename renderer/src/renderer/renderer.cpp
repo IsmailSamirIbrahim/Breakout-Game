@@ -82,15 +82,8 @@ namespace bko
 
 		// create model matrix
 		mat4 model = mat4(1.0);
-
 		// translate
 		model = translate(model, vec3{ sprite.position, 0.0f });
-
-		// rotate
-		model = translate(model, vec3{ 0.5f * sprite.size.x, 0.5f * sprite.size.y, 0.0f });
-		model = rotate(model, 0.0f, vec3{ 0.0f, 0.0f, 1.0f });
-		model = translate(model, vec3(-0.5f * sprite.size.x, -0.5f * sprite.size.y, 0.0f));
-
 		// scale
 		model = scale(model, vec3{ sprite.size, 1.0f });
 

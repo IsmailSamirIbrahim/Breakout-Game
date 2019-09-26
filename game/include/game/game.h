@@ -1,7 +1,7 @@
 #pragma once
 
 #include "game/Exports.h"
-#include "game/game_level.h"
+#include "component/level.h"
 #include "component/player_paddle.h"
 #include "component/ball.h"
 

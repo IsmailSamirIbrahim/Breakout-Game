@@ -15,7 +15,7 @@ namespace bko
 	};
 
 	GAME_EXPORT Level
-	level_new(GLuint level_width, GLuint level_height, const char* file_path);
+	level_new(GLuint window_width, GLuint window_height, const char* file_path);
 
 	GAME_EXPORT void
 	level_free(Level self);

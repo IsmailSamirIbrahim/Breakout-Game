@@ -1,4 +1,4 @@
-#include "game/game_level.h"
+#include "component/level.h"
 
 #include <texture/texture.h>
 #include <resource_manager/resource_manager.h>
@@ -36,9 +36,13 @@ namespace bko
 
 				tile_data.push_back(row);
 			}
+			return tile_data;
 		}
-
-		return tile_data;
+		else
+		{
+			printf("ERROR: Can't load level\n");
+			return vector<vector<GLuint>>{};
+		}
 	}
 
 	inline static void
@@ -96,12 +100,12 @@ namespace bko
 
 	// API
 	Level
-	level_new(GLuint level_width, GLuint level_height, const char* file_path)
+	level_new(GLuint window_width, GLuint window_height, const char* file_path)
 	{
 		Level self{};
 
 		vector<vector<GLuint>> tile_data = _load_level_from_file(file_path);
-		_init_level(tile_data, level_width, level_height, self.bricks);
+		_init_level(tile_data, window_width, window_height, self.bricks);
 
 		return self;
 	}
