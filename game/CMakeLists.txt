@@ -3,6 +3,8 @@ cmake_minimum_required(VERSION 3.9)
 # list the header files
 set(HEADER_FILES
 	include/game/game.h
+	include/game/utilities.h
+	include/game/collision.h
 	include/component/level.h
 	include/component/sprite.h
 	include/component/background.h
