@@ -7,7 +7,7 @@ using namespace bko;
 int
 main(int argc, char** argv)
 {	
-	Game game = game_new(1000, 800);
+	Game game = game_new(900, 600);
 
 	game_init(game);
 
