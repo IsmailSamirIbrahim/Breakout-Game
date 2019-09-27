@@ -50,7 +50,6 @@ namespace bko
 	_load_texture_from_file(const char* image_path)
 	{
 		// Load image
-		stbi_set_flip_vertically_on_load(true);
 		int width, height, channels;
 		unsigned char* image = stbi_load(image_path, &width, &height, &channels, 0);
 

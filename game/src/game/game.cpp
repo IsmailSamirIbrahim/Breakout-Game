@@ -17,16 +17,15 @@ namespace bko
 #define BALL_RADIUS 12.5f
 #define BALL_VELOCITY vec2 {100.0f, -350.0f}
 
-	static Resource_Manager rm = IResource_Manager::get_instance();
-	
 	// API
 	Game
 	game_new(GLsizei width, GLsizei height)
 	{
 		Game self{};
 
-		self.state = Game::STATE_ACTIVE;
+		self.state = Game::STATE_MENU;
 		self.current_level = 1;
+		self.lives = 3;
 		self.player = Player_Paddle{};
 		self.ball = Ball{};
 		self.window = window_new(width, height);
@@ -89,11 +88,22 @@ namespace bko
 	inline static void
 	game_process_input(Game& self, GLfloat delta_time)
 	{
-		if (self.state == Game::STATE_ACTIVE)
+		if (self.state == Game::STATE_MENU)
 		{
-			if (glfwGetKey(self.window.handle, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-				glfwSetWindowShouldClose(self.window.handle, true);
+			if (glfwGetKey(self.window.handle, GLFW_KEY_E) == GLFW_PRESS)
+				self.keys[GLFW_KEY_E] = GL_TRUE;
 
+			if (glfwGetKey(self.window.handle, GLFW_KEY_E) == GLFW_RELEASE)
+				self.keys[GLFW_KEY_E] = GL_FALSE;
+
+			if (glfwGetKey(self.window.handle, GLFW_KEY_P) == GLFW_PRESS)
+				self.keys[GLFW_KEY_P] = GL_TRUE;
+
+			if (glfwGetKey(self.window.handle, GLFW_KEY_P) == GLFW_RELEASE)
+				self.keys[GLFW_KEY_P] = GL_FALSE;
+		}
+		else if (self.state == Game::STATE_ACTIVE)
+		{
 			if (glfwGetKey(self.window.handle, GLFW_KEY_A) == GLFW_PRESS)
 				self.keys[GLFW_KEY_A] = GL_TRUE;
 
@@ -137,32 +147,77 @@ namespace bko
 				self.ball.is_stuck = GL_FALSE;
 			}
 		}
+		else if (self.state == Game::STATE_LOSS)
+		{
+			if (glfwGetKey(self.window.handle, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+				self.keys[GLFW_KEY_ESCAPE] = GL_TRUE;
+
+			if (glfwGetKey(self.window.handle, GLFW_KEY_ESCAPE) == GLFW_RELEASE)
+				self.keys[GLFW_KEY_ESCAPE] = GL_FALSE;
+		}
+		else if (self.state == Game::STATE_WON)
+		{
+			if (glfwGetKey(self.window.handle, GLFW_KEY_E) == GLFW_PRESS)
+				self.keys[GLFW_KEY_E] = GL_TRUE;
+
+			if (glfwGetKey(self.window.handle, GLFW_KEY_E) == GLFW_RELEASE)
+				self.keys[GLFW_KEY_E] = GL_FALSE;
+
+			if (glfwGetKey(self.window.handle, GLFW_KEY_P) == GLFW_PRESS)
+				self.keys[GLFW_KEY_P] = GL_TRUE;
+
+			if (glfwGetKey(self.window.handle, GLFW_KEY_P) == GLFW_RELEASE)
+				self.keys[GLFW_KEY_P] = GL_FALSE;
+		}
 	}
 
 	inline static void
 	game_update(Game& self, GLfloat delta_time)
 	{
-		collision_detection(self, delta_time);
+		if (self.state == Game::STATE_ACTIVE)
+		{
+			collision_detection(self, delta_time);
 
-		if (self.ball.sprite.position.y >= self.window.height)
-		{
-			game_reset_level(self.levels, self.current_level);
-			game_reset_player(self.player, self.window);
-			game_reset_ball(self.ball, self.player);
-		}
-		else if (level_is_complete(self.levels[self.current_level - 1]))
-		{
-			self.current_level += 1;
-			game_reset_level(self.levels, self.current_level);
-			game_reset_player(self.player, self.window);
-			game_reset_ball(self.ball, self.player);
+			if (self.ball.sprite.position.y >= self.window.height)
+			{
+				game_reset_level(self.levels, self.current_level);
+				game_reset_player(self.player, self.window);
+				game_reset_ball(self.ball, self.player);
+				--self.lives;
+
+				if (self.lives == 0)
+					self.state = Game::STATE_LOSS;
+			}
+			else if (level_is_complete(self.levels[self.current_level - 1]))
+			{
+				game_reset_level(self.levels, self.current_level);
+				game_reset_player(self.player, self.window);
+				game_reset_ball(self.ball, self.player);
+				++self.current_level;
+
+				if (self.current_level == 5)
+					self.state = Game::STATE_WON;
+			}
 		}
 	}
 
 	inline static void
-	game_render(Game self)
+	game_render(Game& self)
 	{
-		if (self.state == Game::STATE_ACTIVE)
+		if (self.state == Game::STATE_MENU)
+		{
+			// render start menu
+			Texture menu = resource_manager_texture(IResource_Manager::get_instance(), "menu");
+			Background background = background_new(menu, vec2{ 0.0f, 0.0f }, vec2{ self.window.width, self.window.height });
+			sprite_renderer_render(self.sprite_renderer, background.sprite);
+
+			if(self.keys[GLFW_KEY_E])
+				glfwSetWindowShouldClose(self.window.handle, true);
+
+			if (self.keys[GLFW_KEY_P])
+				self.state = Game::STATE_ACTIVE;
+		}
+		else if (self.state == Game::STATE_ACTIVE)
 		{
 			// render background
 			Texture bkg = resource_manager_texture(IResource_Manager::get_instance(), "background");
@@ -179,6 +234,30 @@ namespace bko
 
 			//render ball
 			sprite_renderer_render(self.sprite_renderer, self.ball.sprite);
+		}
+		else if (self.state == Game::STATE_LOSS)
+		{
+			// render Loss texture
+			Texture loss = resource_manager_texture(IResource_Manager::get_instance(), "loss");
+			Background background = background_new(loss, vec2{ 0.0f, 0.0f }, vec2{ self.window.width, self.window.height });
+			sprite_renderer_render(self.sprite_renderer, background.sprite);
+
+			if (self.keys[GLFW_KEY_ESCAPE])
+				glfwSetWindowShouldClose(self.window.handle, true);
+
+		}
+		else if (self.state == Game::STATE_WON)
+		{
+			// render Loss texture
+			Texture won = resource_manager_texture(IResource_Manager::get_instance(), "won");
+			Background background = background_new(won, vec2{ 0.0f, 0.0f }, vec2{ self.window.width, self.window.height });
+			sprite_renderer_render(self.sprite_renderer, background.sprite);
+
+			if (self.keys[GLFW_KEY_E])
+				glfwSetWindowShouldClose(self.window.handle, true);
+
+			if (self.keys[GLFW_KEY_P])
+				self.state = Game::STATE_ACTIVE;
 		}
 	}
 

@@ -47,7 +47,16 @@ namespace bko
 		Resource_Manager rm = IResource_Manager::get_instance();
 		
 		// load textures
-		string image_path = std::string(IMAGE_DIR) + std::string("/images/background.jpg");
+		string image_path = std::string(IMAGE_DIR) + std::string("/images/start_menu.jpg");
+		resource_manager_load_texture(rm, image_path.c_str(), "menu");
+
+		image_path = std::string(IMAGE_DIR) + std::string("/images/loss.png");
+		resource_manager_load_texture(rm, image_path.c_str(), "loss");
+
+		image_path = std::string(IMAGE_DIR) + std::string("/images/won.png");
+		resource_manager_load_texture(rm, image_path.c_str(), "won");
+
+		image_path = std::string(IMAGE_DIR) + std::string("/images/background.jpg");
 		resource_manager_load_texture(rm, image_path.c_str(), "background");
 
 		image_path = std::string(IMAGE_DIR) + std::string("/images/block.png");
