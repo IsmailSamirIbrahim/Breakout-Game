@@ -127,8 +127,10 @@ namespace bko
 	}
 
 	inline static void
-	collision_detection(Game& self)
+	collision_detection(Game& self, GLfloat delta_time)
 	{
+		collision_ball_edge_detection(self, delta_time);
+
 		for (Brick& brick : self.levels[self.current_level - 1].bricks)
 			if (!brick.is_destroyed)
 			{

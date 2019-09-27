@@ -19,30 +19,6 @@ namespace bko
 
 	static Resource_Manager rm = IResource_Manager::get_instance();
 	
-	inline static void
-	_game_reset_level(Game& self)
-	{
-		for (Brick& brick : self.levels[self.current_level - 1].bricks)
-			brick.is_destroyed = GL_FALSE;
-	}
-
-	inline static void
-	_game_reset_player(Game& self)
-	{
-		// player reseting
-		Texture texture = resource_manager_texture(rm, "paddle");
-		self.player = player_paddle_new(texture,
-			vec2{ self.window.width / 2 - PLAYER_PADDLE_SIZE.x / 2, self.window.height - PLAYER_PADDLE_SIZE.y },
-			PLAYER_PADDLE_SIZE,
-			PLAYER_PADDLE_VELOCITY
-		);
-
-		// ball reseting
-		texture = resource_manager_texture(rm, "ball");
-		vec2 ball_pos = self.player.sprite.position + vec2{ self.player.sprite.size.x / 2 - 12.5f, -1 * BALL_RADIUS * 2 };
-		self.ball = ball_new(texture, ball_pos, BALL_VELOCITY, BALL_RADIUS, GL_TRUE);
-	}
-	
 	// API
 	Game
 	game_new(GLsizei width, GLsizei height)
@@ -50,7 +26,7 @@ namespace bko
 		Game self{};
 
 		self.state = Game::STATE_ACTIVE;
-		self.current_level = 3;
+		self.current_level = 1;
 		self.player = Player_Paddle{};
 		self.ball = Ball{};
 		self.window = window_new(width, height);
@@ -166,19 +142,20 @@ namespace bko
 	inline static void
 	game_update(Game& self, GLfloat delta_time)
 	{
-		collision_ball_edge_detection(self, delta_time);
-		collision_detection(self);
+		collision_detection(self, delta_time);
 
 		if (self.ball.sprite.position.y >= self.window.height)
 		{
-			_game_reset_level(self);
-			_game_reset_player(self);
+			game_reset_level(self.levels, self.current_level);
+			game_reset_player(self.player, self.window);
+			game_reset_ball(self.ball, self.player);
 		}
 		else if (level_is_complete(self.levels[self.current_level - 1]))
 		{
 			self.current_level += 1;
-			_game_reset_level(self);
-			_game_reset_player(self);
+			game_reset_level(self.levels, self.current_level);
+			game_reset_player(self.player, self.window);
+			game_reset_ball(self.ball, self.player);
 		}
 	}
 
