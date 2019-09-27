@@ -47,21 +47,21 @@ source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${SOURCE_FILES})
 
 # Windows specfic flags to enable W variations of winapi
 if(WIN32)
-	target_compile_definitions(imago
+	target_compile_definitions(game
 		PRIVATE
 			OS_WINDOWS=1
 			_CRT_SECURE_NO_WARNINGS
 	)
-	target_compile_options(imago
+	target_compile_options(game
 		PRIVATE
 			/WX
 	)
 elseif(UNIX)
-	target_compile_definitions(imago
+	target_compile_definitions(game
 		PRIVATE
 			OS_LINUX=1
 	)
-	target_compile_options(imago
+	target_compile_options(game
 		PRIVATE
 			-Werror
 	)

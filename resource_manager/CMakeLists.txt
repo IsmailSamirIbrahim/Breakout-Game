@@ -29,21 +29,21 @@ target_link_libraries(resource_manager
 
 # Windows specfic flags to enable W variations of winapi
 if(WIN32)
-	target_compile_definitions(imago
+	target_compile_definitions(resource_manager
 		PRIVATE
 			OS_WINDOWS=1
 			_CRT_SECURE_NO_WARNINGS
 	)
-	target_compile_options(imago
+	target_compile_options(resource_manager
 		PRIVATE
 			/WX
 	)
 elseif(UNIX)
-	target_compile_definitions(imago
+	target_compile_definitions(resource_manager
 		PRIVATE
 			OS_LINUX=1
 	)
-	target_compile_options(imago
+	target_compile_options(resource_manager
 		PRIVATE
 			-Werror
 	)
