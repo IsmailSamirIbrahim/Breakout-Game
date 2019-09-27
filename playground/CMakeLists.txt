@@ -34,18 +34,10 @@ if(WIN32)
 			OS_WINDOWS=1
 			_CRT_SECURE_NO_WARNINGS
 	)
-	target_compile_options(playground
-		PRIVATE
-			/WX
-	)
 elseif(UNIX)
 	target_compile_definitions(playground
 		PRIVATE
 			OS_LINUX=1
-	)
-	target_compile_options(playground
-		PRIVATE
-			-Werror
 	)
 endif()
 

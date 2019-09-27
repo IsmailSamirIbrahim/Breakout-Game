@@ -4,7 +4,7 @@
 
 #include <program/program.h>
 
-#include <Texture/texture.h>
+#include <texture/texture.h>
 
 #include <renderer/window.h>
 

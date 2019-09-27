@@ -34,18 +34,10 @@ if(WIN32)
 			OS_WINDOWS=1
 			_CRT_SECURE_NO_WARNINGS
 	)
-	target_compile_options(resource_manager
-		PRIVATE
-			/WX
-	)
 elseif(UNIX)
 	target_compile_definitions(resource_manager
 		PRIVATE
 			OS_LINUX=1
-	)
-	target_compile_options(resource_manager
-		PRIVATE
-			-Werror
 	)
 endif()
 
