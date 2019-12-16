@@ -1,9 +1,6 @@
 # Breakout-Game
 This is my first 2D-Game using OpenGl/C++ 
 
-## Issue-Management board
-Issue managment is done on [Trello](https://trello.com/b/fINGNr6G/2d-game)
-
 ## Build Guide
 
 ### Windows
