@@ -20,3 +20,9 @@ Breakout, is a classic 2D game released in 1976 on the Atari 2600 console. Break
 - `cd build`
 - `cmake ..`
 - `make`
+
+### ScreenShots
+<img src="/images/Menu.PNG" width="800" height="500">
+
+<img src="/images/Game.PNG" width="800" height="500">
+
