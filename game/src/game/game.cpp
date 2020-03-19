@@ -248,7 +248,7 @@ namespace bko
 		}
 		else if (self.state == Game::STATE_WON)
 		{
-			// render Loss texture
+			// render Won texture
 			Texture won = resource_manager_texture(IResource_Manager::get_instance(), "won");
 			Background background = background_new(won, vec2{ 0.0f, 0.0f }, vec2{ self.window.width, self.window.height });
 			sprite_renderer_render(self.sprite_renderer, background.sprite);
